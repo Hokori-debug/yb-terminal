@@ -1,0 +1,1894 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YB Quest Terminal // Classified Archive</title>
+  <meta name="description" content="Interactive Alternate Reality Game (ARG) Terminal untuk Buku Tahunan. Pecahkan teka-teki kata sandi untuk membuka arsip tersembunyi.">
+
+  <style>
+    /* ==========================================================================
+       1. ROOT VARIABLES & RETRO PALETTE
+       ========================================================================== */
+    :root {
+      --bg-color: #000000;
+      --term-green: #00ff66;
+      --term-green-dim: #008833;
+      --term-green-glow: rgba(0, 255, 102, 0.45);
+      --term-green-subtle: rgba(0, 255, 102, 0.08);
+      --term-red: #ff3333;
+      --term-red-glow: rgba(255, 51, 51, 0.5);
+      --term-amber: #ffb000;
+      --term-cyan: #00e5ff;
+      --border-color: #00ff66;
+      --font-mono: "Consolas", "Courier New", "Lucida Console", "Monaco", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--term-green);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      overflow-x: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 16px;
+      line-height: 1.5;
+      text-shadow: 0 0 5px var(--term-green-glow);
+      position: relative;
+    }
+
+    /* Scanlines Overlay */
+    body::before {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.35) 50%
+      ), linear-gradient(
+        90deg,
+        rgba(255, 0, 0, 0.03),
+        rgba(0, 255, 0, 0.01),
+        rgba(0, 255, 0, 0.03)
+      );
+      z-index: 999;
+      background-size: 100% 3px, 4px 100%;
+      pointer-events: none;
+      opacity: 0.85;
+    }
+
+    /* CRT Vignette */
+    body::after {
+      content: " ";
+      display: block;
+      position: fixed;
+      top: 0; left: 0; bottom: 0; right: 0;
+      background: radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.75) 100%);
+      pointer-events: none;
+      z-index: 998;
+    }
+
+    /* ==========================================================================
+       2. TERMINAL CONTAINER & TOP BAR
+       ========================================================================== */
+    .terminal-container {
+      width: 100%;
+      max-width: 940px;
+      margin: 12px auto;
+      border: 2px solid var(--border-color);
+      box-shadow: 0 0 15px var(--term-green-glow), inset 0 0 20px var(--term-green-subtle);
+      background: rgba(0, 0, 0, 0.95);
+      border-radius: 4px;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .terminal-bar {
+      background: #00240d;
+      border-bottom: 2px solid var(--border-color);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      letter-spacing: 1px;
+      user-select: none;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .terminal-title {
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .terminal-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn-link {
+      background: transparent;
+      border: 1px solid var(--term-green);
+      color: var(--term-green);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      text-shadow: 0 0 4px var(--term-green-glow);
+    }
+
+    .btn-link:hover {
+      background: var(--term-green);
+      color: #000;
+      box-shadow: 0 0 10px var(--term-green);
+    }
+
+    .btn-link.admin-btn {
+      border-color: var(--term-amber);
+      color: var(--term-amber);
+    }
+    .btn-link.admin-btn:hover {
+      background: var(--term-amber);
+      color: #000;
+      box-shadow: 0 0 10px var(--term-amber);
+    }
+
+    /* Terminal Body Content */
+    .terminal-content {
+      padding: 24px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    .banner-text {
+      font-size: clamp(0.72rem, 1.8vw, 0.9rem);
+      color: var(--term-green);
+      margin-bottom: 16px;
+      white-space: pre-wrap;
+      line-height: 1.25;
+      letter-spacing: 1px;
+    }
+
+    h1, h2, h3, h4 {
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+      border-bottom: 1px dashed var(--term-green-dim);
+      padding-bottom: 8px;
+      width: 100%;
+    }
+
+    h2 {
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+    }
+
+    .system-desc {
+      font-size: 0.95rem;
+      max-width: 680px;
+      margin: 8px auto 20px;
+      color: #79f7a4;
+    }
+
+    .clue-hint {
+      color: var(--term-amber);
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+      padding: 6px 12px;
+      border: 1px solid rgba(255, 176, 0, 0.4);
+      background: rgba(255, 176, 0, 0.05);
+      border-radius: 2px;
+      display: inline-block;
+      max-width: 90%;
+    }
+
+    /* ==========================================================================
+       3. INPUT AND FORMS
+       ========================================================================== */
+    .input-box-wrapper {
+      width: 100%;
+      max-width: 520px;
+      margin: 16px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .cmd-line {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      background: rgba(0, 20, 5, 0.8);
+      border: 1px solid var(--border-color);
+      padding: 8px 12px;
+      box-shadow: inset 0 0 10px rgba(0, 255, 102, 0.1);
+      position: relative;
+    }
+
+    .cmd-prefix {
+      color: var(--term-green);
+      font-weight: bold;
+      margin-right: 8px;
+      user-select: none;
+      white-space: nowrap;
+      font-size: 0.95rem;
+    }
+
+    .term-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 1.05rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 6px rgba(255, 255, 255, 0.7);
+      width: 100%;
+    }
+
+    .term-input::placeholder {
+      color: rgba(0, 255, 102, 0.3);
+      font-weight: normal;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+    }
+
+    .btn-submit {
+      background: transparent;
+      color: var(--term-green);
+      border: 2px solid var(--term-green);
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 1rem;
+      padding: 10px 24px;
+      cursor: pointer;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: all 0.2s ease;
+      box-shadow: 0 0 8px var(--term-green-glow);
+      margin-top: 8px;
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .btn-submit:hover, .btn-submit:focus {
+      background: var(--term-green);
+      color: #000000;
+      box-shadow: 0 0 18px var(--term-green);
+      outline: none;
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:active {
+      transform: translateY(1px);
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      min-height: 1.4rem;
+      letter-spacing: 1px;
+    }
+
+    .status-msg.error {
+      color: var(--term-red);
+      text-shadow: 0 0 6px var(--term-red-glow);
+      animation: blink 0.4s 3 ease-in-out;
+    }
+
+    .status-msg.success {
+      color: var(--term-green);
+      text-shadow: 0 0 6px var(--term-green-glow);
+    }
+
+    /* ==========================================================================
+       4. STAGE 2: VISUAL BRANCH / IMAGE GALLERY
+       ========================================================================== */
+    .gallery-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      margin: 20px 0 28px;
+    }
+
+    .gallery-card {
+      background: #021105;
+      border: 1px solid var(--term-green-dim);
+      border-radius: 4px;
+      padding: 10px;
+      width: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.8);
+      cursor: pointer;
+    }
+
+    .gallery-card:hover {
+      border-color: var(--term-green);
+      box-shadow: 0 0 15px var(--term-green-glow);
+      transform: translateY(-2px);
+    }
+
+    .gallery-card-badge {
+      font-size: 0.72rem;
+      letter-spacing: 1px;
+      color: #9effbf;
+      margin-bottom: 8px;
+      border-bottom: 1px solid var(--term-green-dim);
+      padding-bottom: 4px;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .img-wrapper {
+      width: 100%;
+      height: 180px;
+      overflow: hidden;
+      border: 1px solid #004419;
+      position: relative;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .clue-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: contrast(1.15) brightness(0.9);
+      transition: transform 0.4s ease;
+    }
+
+    .gallery-card:hover .clue-image {
+      transform: scale(1.05);
+    }
+
+    .img-wrapper::after {
+      content: "[TOP SECRET]";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      color: rgba(255, 255, 255, 0.2);
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: 2px dashed rgba(255, 255, 255, 0.15);
+      padding: 4px 8px;
+      pointer-events: none;
+      letter-spacing: 2px;
+    }
+
+    .card-footer {
+      margin-top: 8px;
+      font-size: 0.78rem;
+      color: var(--term-green);
+      letter-spacing: 1px;
+    }
+
+    /* ==========================================================================
+       5. STAGE 3: RESOLUTION & YOUTUBE EMBED
+       ========================================================================== */
+    .video-section {
+      width: 100%;
+      max-width: 780px;
+      margin: 16px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .video-badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: rgba(0, 255, 102, 0.1);
+      border: 1px solid var(--term-green);
+      color: var(--term-green);
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 16px;
+      text-transform: uppercase;
+    }
+
+    .video-viewport {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border: 2px solid var(--term-green);
+      box-shadow: 0 0 25px var(--term-green-glow);
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .video-viewport iframe {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+    }
+
+    .action-button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 24px;
+      width: 100%;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--term-green);
+      border: 1px solid var(--term-green);
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      padding: 8px 18px;
+      cursor: pointer;
+      letter-spacing: 1px;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: rgba(0, 255, 102, 0.15);
+      box-shadow: 0 0 10px var(--term-green-glow);
+    }
+
+    /* ==========================================================================
+       6. MODAL & ADMIN PANEL STYLING
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      backdrop-filter: blur(4px);
+    }
+
+    .modal-box {
+      background: #010c04;
+      border: 2px solid var(--term-green);
+      box-shadow: 0 0 30px var(--term-green-glow);
+      max-width: 650px;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      padding: 20px;
+      position: relative;
+      color: var(--term-green);
+      text-align: left;
+    }
+
+    .modal-box.admin-modal {
+      max-width: 860px;
+      border-color: var(--term-amber);
+      box-shadow: 0 0 30px rgba(255, 176, 0, 0.4);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--term-green-dim);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+    }
+
+    .modal-header.admin-header {
+      border-color: var(--term-amber);
+    }
+
+    .modal-close {
+      background: transparent;
+      border: 1px solid var(--term-red);
+      color: var(--term-red);
+      font-family: var(--font-mono);
+      font-weight: bold;
+      padding: 2px 8px;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      background: var(--term-red);
+      color: #000;
+    }
+
+    .admin-section {
+      background: rgba(0, 25, 10, 0.6);
+      border: 1px solid var(--term-green-dim);
+      padding: 16px;
+      margin-bottom: 16px;
+      border-radius: 4px;
+    }
+
+    .admin-section-title {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--term-amber);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px dashed rgba(255, 176, 0, 0.3);
+      padding-bottom: 6px;
+    }
+
+    .form-group {
+      margin-bottom: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .admin-input {
+      background: #001205;
+      border: 1px solid var(--term-green-dim);
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 0.9rem;
+      padding: 8px 10px;
+      outline: none;
+      border-radius: 2px;
+    }
+
+    .admin-input:focus {
+      border-color: var(--term-green);
+      box-shadow: 0 0 8px var(--term-green-glow);
+    }
+
+    .admin-card-row {
+      background: #001908;
+      border: 1px solid #004d1a;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .admin-card-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    @media (max-width: 700px) {
+      .admin-card-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .admin-img-preview {
+      width: 100%;
+      height: 110px;
+      object-fit: cover;
+      border: 1px solid var(--term-green-dim);
+      background: #000;
+      margin-top: 6px;
+      display: block;
+    }
+
+    .admin-btn-action {
+      background: transparent;
+      border: 1px solid var(--term-green);
+      color: var(--term-green);
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      cursor: pointer;
+      text-transform: uppercase;
+      font-weight: bold;
+      transition: all 0.2s ease;
+    }
+
+    .admin-btn-action:hover {
+      background: var(--term-green);
+      color: #000;
+      box-shadow: 0 0 10px var(--term-green);
+    }
+
+    .admin-btn-delete {
+      border-color: var(--term-red);
+      color: var(--term-red);
+    }
+    .admin-btn-delete:hover {
+      background: var(--term-red);
+      color: #000;
+      box-shadow: 0 0 10px var(--term-red);
+    }
+
+    .admin-btn-amber {
+      border-color: var(--term-amber);
+      color: var(--term-amber);
+    }
+    .admin-btn-amber:hover {
+      background: var(--term-amber);
+      color: #000;
+      box-shadow: 0 0 10px var(--term-amber);
+    }
+
+    .admin-footer-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 16px;
+      border-top: 1px solid rgba(255, 176, 0, 0.3);
+      padding-top: 14px;
+    }
+
+    .helper-text {
+      font-size: 0.75rem;
+      color: #92e0ab;
+      line-height: 1.3;
+    }
+
+    /* Modal Toolkit Textareas */
+    .modal-content textarea {
+      width: 100%;
+      height: 90px;
+      background: #001205;
+      border: 1px solid var(--term-green-dim);
+      color: var(--term-green);
+      font-family: var(--font-mono);
+      padding: 8px;
+      font-size: 0.85rem;
+      resize: vertical;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+
+    /* ==========================================================================
+       7. UTILITY CLASSES
+       ========================================================================== */
+    .hidden {
+      display: none !important;
+    }
+
+    .cursor-blink {
+      display: inline-block;
+      width: 8px;
+      height: 15px;
+      background: var(--term-green);
+      vertical-align: middle;
+      margin-left: 4px;
+      animation: blink 0.9s infinite;
+    }
+
+    @keyframes blink {
+      0%, 49% { opacity: 1; }
+      50%, 100% { opacity: 0; }
+    }
+
+    .terminal-footer {
+      margin-top: 16px;
+      font-size: 0.75rem;
+      color: var(--term-green-dim);
+      text-align: center;
+      letter-spacing: 1px;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 8px;
+      }
+      .terminal-content {
+        padding: 16px 10px;
+      }
+      .gallery-card {
+        width: 100%;
+        max-width: 320px;
+      }
+      .cmd-prefix {
+        font-size: 0.82rem;
+      }
+      .term-input {
+        font-size: 0.95rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="terminal-container" role="main" aria-label="Terminal YB Quest">
+    
+    <!-- Top System Header Bar -->
+    <header class="terminal-bar">
+      <div class="terminal-title">
+        <span>[SYS.VER: 2026.04]</span>
+        <span>YB_TERMINAL://AUTH_NODE</span>
+      </div>
+      <div class="terminal-controls">
+        <button id="btnSoundToggle" class="btn-link" title="Nyalakan/Matikan Efek Suara">🔊 SUARA: NYALA</button>
+        <button id="btnBase64Helper" class="btn-link" title="Buka Alat Bantu Base64">⚙ BASE64 TOOLKIT</button>
+        <button id="btnAdminPanel" class="btn-link admin-btn" title="Buka Panel Konfigurasi Admin">🛠 PANEL ADMIN</button>
+      </div>
+    </header>
+
+    <!-- Main Viewport Content -->
+    <div class="terminal-content">
+      
+      <!-- ASCII Header Banner -->
+      <pre class="banner-text" aria-hidden="true">
+==============================================================
+   __   ______     ____  __  __________________
+   \ \ / / __ )   / __ \/ / / / ____/ ___/_  __/
+    \ V / __  |  / / / / / / / __/  \__ \ / /   
+     / / /_/ /  / /_/ / /_/ / /___ ___/ // /    
+    /_/_____/   \___\_\____/_____//____//_/     
+       [ SISTEM ARSIP BUKU TAHUNAN // RAHASIA ]
+==============================================================</pre>
+
+      <!-- ====================================================================
+           TAHAP 1: AUTENTIKASI AWAL (INITIAL AUTHENTICATION)
+           ==================================================================== -->
+      <section id="stage1" aria-labelledby="stage1-title">
+        <h1 id="stage1-title">TAHAP 1: OTORISASI TERMINAL</h1>
+        <p class="system-desc">
+          Sistem mendeteksi akses eksternal melalui dekripsi Base64.<br>
+          Masukkan kata sandi awal untuk membuka arsip terenkripsi.
+        </p>
+
+        <div id="stage1HintText" class="clue-hint">
+          [PETUNJUK]: Sandi Tahap 1 tersembunyi pada postingan atau bio Instagram kreator.
+        </div>
+
+        <form id="formStage1" onsubmit="handleStage1Submit(event)" autocomplete="off">
+          <div class="input-box-wrapper">
+            <div class="cmd-line">
+              <span class="cmd-prefix">root@yb-quest:~$</span>
+              <input 
+                type="text" 
+                id="inputStage1" 
+                class="term-input" 
+                placeholder="MASUKKAN KATA SANDI..." 
+                autofocus 
+                required 
+                spellcheck="false"
+                aria-label="Kata sandi tahap 1"
+                oninput="this.value = this.value.toUpperCase()"
+              >
+            </div>
+            <button type="submit" id="btnSubmitStage1" class="btn-submit">
+              [ VERIFIKASI SANDI ]
+            </button>
+          </div>
+        </form>
+
+        <div id="statusStage1" class="status-msg" aria-live="polite"></div>
+      </section>
+
+      <!-- ====================================================================
+           TAHAP 2: CABANG VISUAL (VISUAL BRANCH & GUESSING)
+           ==================================================================== -->
+      <section id="stage2" class="hidden" aria-labelledby="stage2-title">
+        <h2 id="stage2-title">TAHAP 2: DEKRIPSI ARSIP VISUAL</h2>
+        <p class="system-desc">
+          Otorisasi Tingkat 1 Berhasil. Fragmen visual terdeteksi dari arsip sekolah.<br>
+          Tebak salah satu objek / lokasi rahasia di bawah ini, lalu masukkan namanya untuk membuka rekaman video unlisted yang sesuai.
+        </p>
+
+        <div class="clue-hint">
+          [PETUNJUK]: Amati gambar yang di-blur di bawah ini. Masukkan nama objek/lokasi terpilih sebagai sandi kedua.
+        </div>
+
+        <!-- Galeri Gambar Blur Dinamis (Display: flex with wrap) -->
+        <div id="galleryContainer" class="gallery-container" role="region" aria-label="Galeri Gambar Clue">
+          <!-- Kartu dirender secara dinamis oleh JavaScript berdasarkan konfigurasi -->
+        </div>
+
+        <!-- Form Input Sandi Tahap 2 -->
+        <form id="formStage2" onsubmit="handleStage2Submit(event)" autocomplete="off">
+          <div class="input-box-wrapper">
+            <div class="cmd-line">
+              <span class="cmd-prefix">root@yb-quest/stage2:~$</span>
+              <input 
+                type="text" 
+                id="inputStage2" 
+                class="term-input" 
+                placeholder="TEBAK NAMA OBJEK / SANDI..." 
+                required 
+                spellcheck="false"
+                aria-label="Kata sandi tahap 2"
+                oninput="this.value = this.value.toUpperCase()"
+              >
+            </div>
+            <button type="submit" id="btnSubmitStage2" class="btn-submit">
+              [ BUKA REKAMAN RAHASIA ]
+            </button>
+          </div>
+        </form>
+
+        <div id="statusStage2" class="status-msg" aria-live="polite"></div>
+      </section>
+
+      <!-- ====================================================================
+           TAHAP 3: RESOLUSI & YOUTUBE UNLISTED EMBED
+           ==================================================================== -->
+      <section id="stage3" class="hidden" aria-labelledby="stage3-title">
+        <h2 id="stage3-title">TAHAP 3: AKSES REKAMAN DIBERIKAN</h2>
+        <p class="system-desc">
+          Enkripsi berhasil ditembus. Transmisi video rahasia sedang diputar langsung dari peladen arsip.
+        </p>
+
+        <div class="video-section">
+          <div id="videoBadge" class="video-badge">
+            MEMUAT REKAMAN...
+          </div>
+
+          <!-- Wadah Dynamic iFrame YouTube -->
+          <div class="video-viewport" id="videoContainer">
+            <!-- Elemen iframe dirakit secara dinamis oleh JavaScript -->
+          </div>
+
+          <!-- Navigasi Percabangan -->
+          <div class="action-button-group">
+            <button type="button" class="btn-secondary" onclick="returnToStage2()">
+              [ ↺ COBA JALUR OBJEK LAIN ]
+            </button>
+            <button type="button" class="btn-secondary" onclick="resetToBeginning()">
+              [ ⌂ KUNCI ULANG TERMINAL ]
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Terminal Footer -->
+    <footer class="terminal-bar" style="border-top: 1px solid var(--term-green-dim); border-bottom: none; font-size: 0.72rem;">
+      <span>STATUS: RUNNING (CLIENT-SIDE)</span>
+      <span>10-YEAR DURABILITY ASSURED</span>
+      <span>CLEARANCE: <span id="clearanceBadge">LEVEL 0 (PUBLIC)</span></span>
+    </footer>
+
+  </main>
+
+  <div class="terminal-footer">
+    YB QUEST TERMINAL // SECURE RETRO ARG ENGINE &copy; 2026
+  </div>
+
+  <!-- ========================================================================
+       MODAL 1: BASE64 TOOLKIT (UNTUK PANITIA BUKU TAHUNAN)
+       ======================================================================== -->
+  <div id="modalBase64" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modalTitle">[ BASE64 ARG TOOLKIT ]</h3>
+        <button type="button" class="modal-close" onclick="closeBase64Modal()">[X]</button>
+      </div>
+      <div class="modal-content">
+        <p style="font-size: 0.82rem; margin-bottom: 12px; color: #a4ffc8;">
+          Gunakan utilitas ini untuk meng-encode URL GitHub Pages menjadi string Base64 yang akan dicetak pada Buku Tahunan cetak.
+        </p>
+
+        <label style="font-size: 0.8rem; font-weight: bold;">INPUT TEKS / URL:</label>
+        <textarea id="base64InputText" placeholder="Contoh: https://angkatan2026.github.io/yb-terminal/"></textarea>
+
+        <div style="display: flex; gap: 8px; margin-bottom: 12px;">
+          <button type="button" class="btn-link" onclick="handleBase64Encode()">ENCODE KE BASE64</button>
+          <button type="button" class="btn-link" onclick="handleBase64Decode()">DECODE DARI BASE64</button>
+        </div>
+
+        <label style="font-size: 0.8rem; font-weight: bold;">HASIL:</label>
+        <textarea id="base64OutputText" readonly placeholder="Hasil konversi akan muncul di sini..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: INSPEKSI ARTEFAK GAMBAR (LIGHTBOX PREVIEW TEKA-TEKI)
+       ======================================================================== -->
+  <div id="modalInspect" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="inspectTitle">
+    <div class="modal-box" style="max-width: 720px; text-align: center;">
+      <div class="modal-header">
+        <h3 id="inspectTitle" style="color: var(--term-green);">[ INSPEKSI DOKUMEN ARSIP ]</h3>
+        <button type="button" class="modal-close" onclick="closeInspectModal()">[X]</button>
+      </div>
+      <div style="width: 100%; max-height: 480px; overflow: hidden; border: 2px solid var(--term-green); background: #000; position: relative; margin-bottom: 14px;">
+        <img id="inspectImg" src="" alt="Pratinjau Artefak" style="width: 100%; height: auto; max-height: 480px; object-fit: contain; filter: contrast(1.15) brightness(0.95); display: block; margin: 0 auto;">
+      </div>
+      <p id="inspectDesc" style="font-size: 0.85rem; color: #9dfcb7; margin-bottom: 16px;">
+        Amati detail visual pada foto di atas secara teliti.<br>
+        <strong>Tebak apa nama tempat/objek ini</strong>, lalu ketik jawabannya pada form tebakan di bawah!
+      </p>
+      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <button type="button" class="btn-submit" style="max-width: 320px; font-size: 0.9rem;" onclick="focusGuessInput()">
+          [ ✍ KETIK TEBAKAN DI FORM ]
+        </button>
+        <button type="button" class="btn-link" style="border-color: var(--term-green); color: var(--term-green); padding: 8px 16px;" onclick="closeInspectModal()">
+          [ TUTUP INSPEKSI ]
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL: PIN PROMPT OTORISASI ADMIN
+       ======================================================================== -->
+  <div id="modalPinPrompt" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <div class="modal-box" style="max-width: 440px; text-align: center; border-color: var(--term-amber); box-shadow: 0 0 25px rgba(255, 176, 0, 0.4);">
+      <div class="modal-header admin-header">
+        <h3 id="pinTitle" style="color: var(--term-amber); margin: 0 auto;">[ OTORISASI PANEL ADMIN ]</h3>
+      </div>
+      <p style="font-size: 0.85rem; margin-bottom: 14px; color: #ffd27f;">
+        Masukkan PIN Master Otorisasi Administrator:
+      </p>
+
+      <form onsubmit="handlePinSubmit(event)">
+        <div style="background: rgba(0, 20, 5, 0.9); border: 1px solid var(--term-amber); padding: 6px 12px; margin-bottom: 12px; display: flex; align-items: center;">
+          <span style="color: var(--term-amber); font-weight: bold; margin-right: 8px;">PIN:</span>
+          <input 
+            type="password" 
+            id="inputMasterPin" 
+            class="term-input" 
+            placeholder="Masukkan PIN..." 
+            style="color: var(--term-amber); font-size: 1.1rem; text-align: center;"
+            autocomplete="current-password"
+            required
+          >
+        </div>
+        <div id="pinErrorMsg" class="status-msg error" style="margin-bottom: 10px;"></div>
+        <div style="display: flex; gap: 10px; justify-content: center;">
+          <button type="submit" id="btnPinSubmit" class="admin-btn-action admin-btn-amber" style="padding: 8px 18px;">
+            [ BUKA PANEL ]
+          </button>
+          <button type="button" class="admin-btn-action admin-btn-delete" style="padding: 8px 18px;" onclick="closePinModal()">
+            [ BATAL ]
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       MODAL 2: PANEL ADMIN LENGKAP (ATUR SANDI, GAMBAR, DAN ID YOUTUBE)
+       ======================================================================== -->
+  <div id="modalAdmin" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+    <div class="modal-box admin-modal">
+      <div class="modal-header admin-header">
+        <h3 id="adminModalTitle" style="color: var(--term-amber)">🛠 [ PANEL ADMIN // KONFIGURASI YB QUEST ]</h3>
+        <button type="button" class="modal-close" onclick="closeAdminModal()">[X]</button>
+      </div>
+      
+      <!-- Bagian 1: Sandi Tahap 1 -->
+      <section class="admin-section">
+        <div class="admin-section-title">
+          <span>🔐 TAHAP 1: SANDI AUTENTIKASI AWAL</span>
+        </div>
+        <div class="form-group">
+          <label for="adminStage1Pass">Kata Sandi Tahap 1 (Huruf Kapital Otomatis):</label>
+          <input 
+            type="text" 
+            id="adminStage1Pass" 
+            class="admin-input" 
+            placeholder="Contoh: ANGKATAN2026"
+            oninput="this.value = this.value.toUpperCase()"
+          >
+          <span class="helper-text">Sandi ini yang harus ditebak pengguna dari petunjuk Instagram kreator.</span>
+        </div>
+        <div class="form-group">
+          <label for="adminStage1Hint">Petunjuk Teks Tahap 1:</label>
+          <input 
+            type="text" 
+            id="adminStage1Hint" 
+            class="admin-input" 
+            placeholder="[PETUNJUK]: Sandi Tahap 1 tersembunyi pada postingan atau bio Instagram kreator."
+          >
+        </div>
+      </section>
+
+      <!-- Bagian 2: Daftar Kartu Clue & Video YouTube (Tahap 2 & 3) -->
+      <section class="admin-section">
+        <div class="admin-section-title" style="justify-content: space-between;">
+          <span>🖼️ TAHAP 2 & 3: DAFTAR SEKTOR, GAMBAR BLUR & TARGET YOUTUBE</span>
+          <button type="button" class="admin-btn-action admin-btn-amber" onclick="adminAddNewClue()">
+            ＋ TAMBAH SEKTOR BARU
+          </button>
+        </div>
+        <p class="helper-text" style="margin-bottom: 8px;">
+          Setiap kartu mewakili 1 cabang teka-teki: pemain menebak nama objek/lokasi, lalu jika benar akan membuka video YouTube unlisted yang terkait.
+        </p>
+        <div id="adminSectorNotice" class="status-msg success" style="margin-bottom: 8px; font-size: 0.8rem; min-height: 1.2rem;"></div>
+
+        <!-- Dynamic List of Clue Rows in Admin -->
+        <div id="adminCluesList">
+          <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+      </section>
+
+      <!-- Bagian 3: Keamanan Panel Admin -->
+      <section class="admin-section">
+        <div class="admin-section-title">
+          <span>🛡️ PIN MASTER PANEL ADMIN</span>
+        </div>
+        <div class="form-group">
+          <label for="adminMasterPin">PIN / Kata Sandi Masuk Panel Admin:</label>
+          <input 
+            type="text" 
+            id="adminMasterPin" 
+            class="admin-input" 
+            placeholder="Masukkan PIN baru..." 
+            style="max-width: 280px;"
+          >
+          <span class="helper-text">Gunakan PIN ini untuk membuka Panel Admin agar tidak sembarang dibuka siswa.</span>
+        </div>
+      </section>
+
+      <!-- Footer Tombol Aksi Panel Admin -->
+      <div class="admin-footer-bar">
+        <button type="button" class="admin-btn-action" onclick="adminSaveToBrowser()" title="Simpan ke browser ini (localStorage)">
+          💾 SIMPAN KE BROWSER INI
+        </button>
+        <button type="button" class="admin-btn-action admin-btn-amber" onclick="adminDownloadNewIndexHtml()" title="Download file index.html baru yang sudah otomatis tertanam konfigurasi ini">
+          📥 DOWNLOAD FILE INDEX.HTML BARU
+        </button>
+        <button type="button" class="admin-btn-action admin-btn-delete" onclick="adminResetToDefault()">
+          ↺ RESET KE DEFAULT
+        </button>
+        <button type="button" class="admin-btn-action" onclick="closeAdminModal()">
+          TUTUP
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       JAVASCRIPT LOGIC & CONFIGURATION ENGINE
+       ======================================================================== -->
+  <script>
+    /* ========================================================================
+       1. KONFIGURASI DEFAULT TEKA-TEKI & PEMETAAN
+       (Dapat diubah lewat Panel Admin dan disimpan permanen)
+       ======================================================================== */
+    const DEFAULT_QUEST_CONFIG = {
+      // PIN untuk membuka Panel Admin
+      ADMIN_PIN: "ADMIN123",
+
+      // Kata Sandi Tahap 1
+      STAGE_1_PASSWORD: "ANGKATAN2026",
+      STAGE_1_HINT: "[PETUNJUK]: Sandi Tahap 1 tersembunyi pada postingan atau bio Instagram kreator.",
+
+      // Daftar Objek/Sektor Tahap 2 & Video YouTube Tahap 3
+      CLUES: [
+        {
+          id: "clue_labkom",
+          keyword: "LABKOM",
+          title: "ARTEFAK #01",
+          image: "clue_labkom.jpg",
+          videoId: "dQw4w9WgXcQ"
+        },
+        {
+          id: "clue_kantin",
+          keyword: "KANTIN",
+          title: "ARTEFAK #02",
+          image: "clue_kantin.jpg",
+          videoId: "M7lc1UVf-VE"
+        },
+        {
+          id: "clue_rooftop",
+          keyword: "ROOFTOP",
+          title: "ARTEFAK #03",
+          image: "clue_rooftop.jpg",
+          videoId: "L_LUpnjgPso"
+        }
+      ]
+    };
+
+    // Objek Konfigurasi Aktif (Bisa dimuat dari localStorage jika pernah disimpan lewat Admin Panel)
+    let QUEST_CONFIG = JSON.parse(JSON.stringify(DEFAULT_QUEST_CONFIG));
+
+    // Muat konfigurasi dari localStorage jika ada
+    function loadSavedConfig() {
+      try {
+        const saved = localStorage.getItem("YB_QUEST_CONFIG");
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.STAGE_1_PASSWORD && Array.isArray(parsed.CLUES)) {
+            QUEST_CONFIG = parsed;
+            console.log("[YB QUEST] Konfigurasi kustom dimuat dari LocalStorage.");
+          }
+        }
+      } catch (e) {
+        console.warn("[YB QUEST] Gagal membaca konfigurasi LocalStorage:", e);
+      }
+    }
+    loadSavedConfig();
+
+    // Helper untuk mengekstrak 11 karakter ID YouTube dari URL apa pun
+    function extractYouTubeId(urlOrId) {
+      if (!urlOrId) return "";
+      const trimmed = urlOrId.trim();
+      // Jika sudah berupa ID 11 karakter
+      if (/^[a-zA-Z0-9_-]{11}$/.test(trimmed)) {
+        return trimmed;
+      }
+      // Deteksi URL YouTube (youtu.be, watch?v=, embed/, shorts/)
+      const match = trimmed.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([a-zA-Z0-9_-]{11})/);
+      if (match && match[1]) {
+        return match[1];
+      }
+      return trimmed;
+    }
+
+    // State Variables
+    let currentStage = 1;
+    let audioEnabled = true;
+
+    /* ========================================================================
+       2. RETRO SOUND SYNTHESIZER (NATIVE WEB AUDIO API)
+       Bekerja murni tanpa file eksternal (durabilitas 10+ tahun terjamin)
+       ======================================================================== */
+    let audioCtx = null;
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playTone(freq, type, duration, delay = 0) {
+      if (!audioEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+
+        setTimeout(() => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, ctx.currentTime);
+
+          gain.gain.setValueAtTime(0.08, ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+
+          osc.start();
+          osc.stop(ctx.currentTime + duration);
+        }, delay * 1000);
+      } catch (e) {
+        // Safe fail
+      }
+    }
+
+    function soundBeepClick() {
+      playTone(1200, "square", 0.03);
+    }
+
+    function soundAccessGranted() {
+      playTone(523.25, "sine", 0.1, 0.0);
+      playTone(659.25, "sine", 0.1, 0.08);
+      playTone(783.99, "sine", 0.1, 0.16);
+      playTone(1046.5, "triangle", 0.35, 0.24);
+    }
+
+    function soundAccessDenied() {
+      playTone(180, "sawtooth", 0.25, 0.0);
+      playTone(140, "sawtooth", 0.35, 0.15);
+    }
+
+    // Toggle Audio
+    document.getElementById("btnSoundToggle").addEventListener("click", () => {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById("btnSoundToggle");
+      if (audioEnabled) {
+        btn.textContent = "🔊 SUARA: NYALA";
+        soundBeepClick();
+      } else {
+        btn.textContent = "🔇 SUARA: MATI";
+      }
+    });
+
+    // Sound effect on keydown
+    document.querySelectorAll(".term-input").forEach(input => {
+      input.addEventListener("keydown", (e) => {
+        if (e.key !== "Enter") {
+          soundBeepClick();
+        }
+      });
+    });
+
+    /* ========================================================================
+       3. TAHAP 1: VALIDASI AUTENTIKASI AWAL
+       ======================================================================== */
+    function handleStage1Submit(event) {
+      event.preventDefault();
+      const inputEl = document.getElementById("inputStage1");
+      const statusEl = document.getElementById("statusStage1");
+
+      const enteredPassword = inputEl.value.trim().toUpperCase();
+      if (!enteredPassword) return;
+
+      // Fitur Easter Egg: Jika user ketik 'ADMIN', buka dialog admin
+      if (enteredPassword === "ADMIN") {
+        inputEl.value = "";
+        openAdminModal();
+        return;
+      }
+
+      if (enteredPassword === QUEST_CONFIG.STAGE_1_PASSWORD.toUpperCase()) {
+        // SUKSES TAHAP 1
+        soundAccessGranted();
+        statusEl.className = "status-msg success";
+        statusEl.textContent = "[AKSES DITERIMA] Membuka fragmen data terenkripsi...";
+
+        setTimeout(() => {
+          document.getElementById("stage1").classList.add("hidden");
+          renderStage2Gallery();
+          document.getElementById("stage2").classList.remove("hidden");
+          document.getElementById("clearanceBadge").textContent = "LEVEL 1 (STAGE 2)";
+          currentStage = 2;
+
+          const input2 = document.getElementById("inputStage2");
+          input2.focus();
+        }, 500);
+
+      } else {
+        // GAGAL TAHAP 1
+        soundAccessDenied();
+        statusEl.className = "status-msg error";
+        statusEl.textContent = "[AKSES DITOLAK] Kata sandi tidak cocok. Silakan coba lagi!";
+
+        // Alert bawaan sesuai PRD
+        alert("PERINGATAN SISTEM: KATA SANDI TAHAP 1 SALAH!\nPeriksa petunjuk sandi di Instagram kreator.");
+        inputEl.select();
+      }
+    }
+
+    /* ========================================================================
+       4. TAHAP 2: RENDER GALERI DINAMIS & OBJECT MAPPING
+       ======================================================================== */
+    function renderStage2Gallery() {
+      const container = document.getElementById("galleryContainer");
+      container.innerHTML = "";
+
+      QUEST_CONFIG.CLUES.forEach((clue, index) => {
+        const card = document.createElement("article");
+        card.className = "gallery-card";
+        const cardNum = String(index + 1).padStart(2, "0");
+        const displayLabel = clue.title || `ARTEFAK #${cardNum}`;
+
+        card.title = `Klik untuk memperbesar & mengamati Artefak #${cardNum}`;
+        // Jangan membocorkan jawaban! Mengklik gambar hanya memperbesar untuk inspeksi detail
+        card.onclick = () => inspectClue(index);
+
+        card.innerHTML = `
+          <div class="gallery-card-badge">
+            <span>ARTEFAK #${cardNum}</span>
+            <span>STATUS: BLURRED</span>
+          </div>
+          <div class="img-wrapper">
+            <img 
+              src="${clue.image}" 
+              alt="Fragmen ${cardNum} Terdistorsi" 
+              class="clue-image"
+              onerror="handleImgError(this, '${displayLabel}')"
+            >
+          </div>
+          <div class="card-footer">[ 🔍 KLIK UNTUK INSPEKSI ]</div>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    // Modal Inspeksi Zoom Gambar Clue
+    function inspectClue(index) {
+      soundBeepClick();
+      const clue = QUEST_CONFIG.CLUES[index];
+      if (!clue) return;
+
+      const cardNum = String(index + 1).padStart(2, "0");
+      document.getElementById("inspectTitle").textContent = `[ INSPEKSI DOKUMEN: ARTEFAK #${cardNum} ]`;
+      document.getElementById("inspectImg").src = clue.image;
+      document.getElementById("modalInspect").classList.remove("hidden");
+    }
+
+    function closeInspectModal() {
+      soundBeepClick();
+      document.getElementById("modalInspect").classList.add("hidden");
+    }
+
+    // Menutup modal inspeksi dan memfokuskan input tanpa membocorkan jawaban
+    function focusGuessInput() {
+      closeInspectModal();
+      const input2 = document.getElementById("inputStage2");
+      input2.focus();
+    }
+
+    function handleStage2Submit(event) {
+      event.preventDefault();
+      const inputEl = document.getElementById("inputStage2");
+      const statusEl = document.getElementById("statusStage2");
+
+      const enteredPassword = inputEl.value.trim().toUpperCase();
+      if (!enteredPassword) return;
+
+      // Cari clue yang cocok di database QUEST_CONFIG.CLUES
+      const matchedClue = QUEST_CONFIG.CLUES.find(c => c.keyword.toUpperCase() === enteredPassword);
+
+      if (matchedClue) {
+        // SUKSES TAHAP 2
+        const videoId = extractYouTubeId(matchedClue.videoId);
+
+        soundAccessGranted();
+        statusEl.className = "status-msg success";
+        statusEl.textContent = `[DEKRIPSI SUKSES] Objek teridentifikasi: ${enteredPassword}. Menyiapkan video...`;
+
+        setTimeout(() => {
+          document.getElementById("stage2").classList.add("hidden");
+          document.getElementById("stage3").classList.remove("hidden");
+          document.getElementById("clearanceBadge").textContent = `LEVEL 2 [${enteredPassword}]`;
+          currentStage = 3;
+
+          embedYouTubeVideo(enteredPassword, videoId);
+        }, 600);
+
+      } else {
+        // GAGAL TAHAP 2
+        soundAccessDenied();
+        statusEl.className = "status-msg error";
+        statusEl.textContent = `[IDENTIFIKASI GAGAL] Objek '${enteredPassword}' tidak terdaftar di database.`;
+
+        alert(`PERINGATAN SISTEM: OBJEK '${enteredPassword}' TIDAK VALID!\nAmati gambar blur di galeri dan tebak nama objeknya.`);
+        inputEl.select();
+      }
+    }
+
+    /* ========================================================================
+       5. TAHAP 3: DYNAMIC EMBED YOUTUBE IFRAME
+       ======================================================================== */
+    function embedYouTubeVideo(objectName, videoId) {
+      const container = document.getElementById("videoContainer");
+      const badge = document.getElementById("videoBadge");
+
+      const cleanVideoId = extractYouTubeId(videoId);
+      badge.textContent = `JALUR DIBUKA: [${objectName}] // ID DOKUMEN: ${cleanVideoId}`;
+
+      // Dynamic Iframe Assembly
+      container.innerHTML = `
+        <iframe 
+          id="ytPlayer"
+          src="https://www.youtube.com/embed/${cleanVideoId}?autoplay=1&rel=0&modestbranding=1" 
+          title="Video Rahasia YB: ${objectName}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen>
+        </iframe>
+      `;
+    }
+
+    function returnToStage2() {
+      soundBeepClick();
+      document.getElementById("videoContainer").innerHTML = "";
+
+      document.getElementById("stage3").classList.add("hidden");
+      renderStage2Gallery();
+      document.getElementById("stage2").classList.remove("hidden");
+      document.getElementById("clearanceBadge").textContent = "LEVEL 1 (STAGE 2)";
+
+      const input2 = document.getElementById("inputStage2");
+      input2.value = "";
+      input2.focus();
+      document.getElementById("statusStage2").textContent = "";
+      currentStage = 2;
+    }
+
+    function resetToBeginning() {
+      soundBeepClick();
+      document.getElementById("videoContainer").innerHTML = "";
+      document.getElementById("stage3").classList.add("hidden");
+      document.getElementById("stage2").classList.add("hidden");
+      document.getElementById("stage1").classList.remove("hidden");
+
+      document.getElementById("clearanceBadge").textContent = "LEVEL 0 (PUBLIC)";
+
+      const input1 = document.getElementById("inputStage1");
+      input1.value = "";
+      input1.focus();
+      document.getElementById("statusStage1").textContent = "";
+      document.getElementById("statusStage2").textContent = "";
+      currentStage = 1;
+    }
+
+    /* ========================================================================
+       6. FALLBACK IMAGE GENERATOR (CANVAS)
+       ======================================================================== */
+    function handleImgError(imgElement, fallbackLabel) {
+      const canvas = document.createElement("canvas");
+      canvas.width = 320;
+      canvas.height = 200;
+      const ctx = canvas.getContext("2d");
+
+      ctx.fillStyle = "#011608";
+      ctx.fillRect(0, 0, 320, 200);
+
+      ctx.strokeStyle = "#004419";
+      ctx.lineWidth = 1;
+      for (let x = 0; x < 320; x += 20) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 200); ctx.stroke();
+      }
+      for (let y = 0; y < 200; y += 20) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(320, y); ctx.stroke();
+      }
+
+      ctx.fillStyle = "#00ff66";
+      ctx.font = "bold 13px monospace";
+      ctx.textAlign = "center";
+      ctx.fillText("[ARSIP BLUR TERLINDUNGI]", 160, 90);
+      ctx.font = "11px monospace";
+      ctx.fillText(fallbackLabel, 160, 115);
+
+      imgElement.src = canvas.toDataURL("image/png");
+    }
+
+    /* ========================================================================
+       7. PANEL ADMIN LOGIC (ATUR SANDI, GAMBAR, DAN ID YOUTUBE)
+       ======================================================================== */
+    const modalAdmin = document.getElementById("modalAdmin");
+    const modalPinPrompt = document.getElementById("modalPinPrompt");
+
+    document.getElementById("btnAdminPanel").addEventListener("click", () => {
+      openAdminModal();
+    });
+
+    function openAdminModal() {
+      soundBeepClick();
+      const pinInput = document.getElementById("inputMasterPin");
+      pinInput.value = "";
+      document.getElementById("pinErrorMsg").textContent = "";
+      modalPinPrompt.classList.remove("hidden");
+      setTimeout(() => pinInput.focus(), 100);
+    }
+
+    function closePinModal() {
+      soundBeepClick();
+      modalPinPrompt.classList.add("hidden");
+    }
+
+    function handlePinSubmit(event) {
+      event.preventDefault();
+      const enteredPin = document.getElementById("inputMasterPin").value.trim();
+      const validPin = QUEST_CONFIG.ADMIN_PIN || DEFAULT_QUEST_CONFIG.ADMIN_PIN;
+
+      if (enteredPin === validPin) {
+        soundAccessGranted();
+        modalPinPrompt.classList.add("hidden");
+        populateAdminForm();
+        modalAdmin.classList.remove("hidden");
+      } else {
+        soundAccessDenied();
+        const errEl = document.getElementById("pinErrorMsg");
+        errEl.textContent = "[AKSES DITOLAK] PIN Admin salah!";
+        document.getElementById("inputMasterPin").select();
+      }
+    }
+
+    function closeAdminModal() {
+      soundBeepClick();
+      modalAdmin.classList.add("hidden");
+    }
+
+    // Mengisi form admin dari data konfigurasi aktif
+    function populateAdminForm() {
+      document.getElementById("adminStage1Pass").value = QUEST_CONFIG.STAGE_1_PASSWORD || "";
+      document.getElementById("adminStage1Hint").value = QUEST_CONFIG.STAGE_1_HINT || "";
+      document.getElementById("adminMasterPin").value = QUEST_CONFIG.ADMIN_PIN || "ADMIN123";
+
+      renderAdminCluesList();
+    }
+
+    // Render daftar baris clue di Admin
+    function renderAdminCluesList() {
+      const container = document.getElementById("adminCluesList");
+      container.innerHTML = "";
+
+      QUEST_CONFIG.CLUES.forEach((clue, index) => {
+        const row = document.createElement("div");
+        row.className = "admin-card-row";
+        row.id = `adminClueRow_${index}`;
+
+        row.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: var(--term-green); font-size: 0.85rem;">SEKTOR #${index + 1}</strong>
+            <button type="button" class="admin-btn-action admin-btn-delete" onclick="adminDeleteClue(${index})" title="Hapus kartu ini">
+              [ 🗑 HAPUS SEKTOR ]
+            </button>
+          </div>
+
+          <div class="admin-card-grid">
+            <div>
+              <div class="form-group">
+                <label>KATA KUNCI JAWABAN TEBAKAN (DIRAHASIAKAN):</label>
+                <input 
+                  type="text" 
+                  class="admin-input" 
+                  id="clueKeyword_${index}" 
+                  value="${clue.keyword}" 
+                  placeholder="Contoh: LABKOM"
+                  oninput="this.value = this.value.toUpperCase()"
+                >
+                <span class="helper-text">Kata ini yang harus ditebak pemain (tidak tampil di kartu).</span>
+              </div>
+
+              <div class="form-group">
+                <label>LABEL KARTU YANG TAMPIL (MISAL: ARTEFAK #01):</label>
+                <input 
+                  type="text" 
+                  class="admin-input" 
+                  id="clueTitle_${index}" 
+                  value="${clue.title || 'ARTEFAK #' + (index + 1)}" 
+                  placeholder="Contoh: ARTEFAK #01"
+                >
+                <span class="helper-text">Jangan tuliskan jawaban di sini agar tidak bocor!</span>
+              </div>
+
+              <div class="form-group">
+                <label>TARGET VIDEO YOUTUBE (ID atau Link):</label>
+                <div style="display: flex; gap: 6px;">
+                  <input 
+                    type="text" 
+                    class="admin-input" 
+                    id="clueVideo_${index}" 
+                    value="${clue.videoId}" 
+                    placeholder="Contoh: dQw4w9WgXcQ atau link YouTube"
+                    style="flex: 1;"
+                  >
+                  <button type="button" class="btn-link" onclick="adminTestVideo(${index})" title="Uji putar video">
+                    ▶ TEST
+                  </button>
+                </div>
+                <span class="helper-text">Bisa paste link: https://youtu.be/dQw4w9WgXcQ</span>
+              </div>
+            </div>
+
+            <div>
+              <div class="form-group">
+                <label>SUMBER GAMBAR (File lokal / URL):</label>
+                <input 
+                  type="text" 
+                  class="admin-input" 
+                  id="clueImage_${index}" 
+                  value="${clue.image}" 
+                  placeholder="Contoh: clue_labkom.jpg"
+                  onchange="updateClueImgPreview(${index})"
+                >
+                <div style="margin-top: 6px;">
+                  <label class="btn-link" style="display: inline-block; cursor: pointer; padding: 4px 8px;">
+                    📁 PILIH FOTO DARI KOMPUTER
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      style="display: none;" 
+                      onchange="adminHandleFileUpload(event, ${index})"
+                    >
+                  </label>
+                </div>
+              </div>
+
+              <label style="font-size: 0.75rem;">PREVIEW GAMBAR:</label>
+              <img 
+                id="clueImgPreview_${index}" 
+                src="${clue.image}" 
+                alt="Preview Sektor ${index + 1}" 
+                class="admin-img-preview"
+                onerror="handleImgError(this, 'PREVIEW')"
+              >
+            </div>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    function updateClueImgPreview(index) {
+      const src = document.getElementById(`clueImage_${index}`).value.trim();
+      const img = document.getElementById(`clueImgPreview_${index}`);
+      if (src && img) {
+        img.src = src;
+      }
+    }
+
+    // Upload file foto langsung dari perangkat (disimpan sebagai data URL)
+    function adminHandleFileUpload(event, index) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const dataUrl = e.target.result;
+        document.getElementById(`clueImage_${index}`).value = dataUrl;
+        document.getElementById(`clueImgPreview_${index}`).src = dataUrl;
+        soundBeepClick();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function adminAddNewClue() {
+      soundBeepClick();
+      readCurrentAdminInputs();
+
+      const nextNum = QUEST_CONFIG.CLUES.length + 1;
+      QUEST_CONFIG.CLUES.push({
+        id: `clue_custom_${Date.now()}`,
+        keyword: `OBJEK${nextNum}`,
+        title: `ARTEFAK #${String(nextNum).padStart(2, "0")}`,
+        image: "clue_labkom.jpg",
+        videoId: "dQw4w9WgXcQ"
+      });
+
+      // Auto-save ke localStorage dan update galeri seketika
+      try {
+        localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
+      } catch (e) {}
+
+      renderAdminCluesList();
+      renderStage2Gallery();
+
+      const notice = document.getElementById("adminSectorNotice");
+      if (notice) notice.textContent = `[✓ SEKTOR #${nextNum} DITAMBAHKAN] Perubahan langsung tersimpan!`;
+    }
+
+    function adminDeleteClue(index) {
+      soundBeepClick();
+      readCurrentAdminInputs();
+
+      if (QUEST_CONFIG.CLUES.length <= 1) {
+        alert("Minimal harus ada 1 sektor teka-teki!");
+        return;
+      }
+
+      const deletedTitle = QUEST_CONFIG.CLUES[index].title || `Sektor #${index + 1}`;
+      // Hapus sektor secara instan dari array
+      QUEST_CONFIG.CLUES.splice(index, 1);
+
+      // Auto-save ke localStorage dan update galeri seketika
+      try {
+        localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
+      } catch (e) {}
+
+      renderAdminCluesList();
+      renderStage2Gallery();
+
+      const notice = document.getElementById("adminSectorNotice");
+      if (notice) notice.textContent = `[✓ ${deletedTitle.toUpperCase()} BERHASIL DIHAPUS] Perubahan langsung tersimpan!`;
+    }
+
+    function adminTestVideo(index) {
+      soundBeepClick();
+      const rawVal = document.getElementById(`clueVideo_${index}`).value;
+      const vidId = extractYouTubeId(rawVal);
+      if (!vidId) {
+        alert("Masukkan ID atau link video YouTube terlebih dahulu!");
+        return;
+      }
+      window.open(`https://www.youtube.com/watch?v=${vidId}`, "_blank");
+    }
+
+    // Membaca data yang sedang tertera di form admin
+    function readCurrentAdminInputs() {
+      QUEST_CONFIG.STAGE_1_PASSWORD = (document.getElementById("adminStage1Pass").value || "ANGKATAN2026").trim().toUpperCase();
+      QUEST_CONFIG.STAGE_1_HINT = document.getElementById("adminStage1Hint").value.trim();
+      QUEST_CONFIG.ADMIN_PIN = document.getElementById("adminMasterPin").value.trim() || "ADMIN123";
+
+      QUEST_CONFIG.CLUES.forEach((clue, index) => {
+        const kwEl = document.getElementById(`clueKeyword_${index}`);
+        const titleEl = document.getElementById(`clueTitle_${index}`);
+        const vidEl = document.getElementById(`clueVideo_${index}`);
+        const imgEl = document.getElementById(`clueImage_${index}`);
+
+        if (kwEl) clue.keyword = kwEl.value.trim().toUpperCase();
+        if (titleEl) clue.title = titleEl.value.trim();
+        if (vidEl) clue.videoId = extractYouTubeId(vidEl.value);
+        if (imgEl) clue.image = imgEl.value.trim();
+      });
+    }
+
+    // 1. Simpan ke Browser ini (LocalStorage)
+    function adminSaveToBrowser() {
+      soundBeepClick();
+      readCurrentAdminInputs();
+
+      try {
+        localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
+        soundAccessGranted();
+        alert("SUKSES! Konfigurasi telah disimpan ke browser ini.\nPerubahan langsung aktif.");
+        
+        // Perbarui hint teks di Tahap 1
+        if (QUEST_CONFIG.STAGE_1_HINT) {
+          document.getElementById("stage1HintText").textContent = QUEST_CONFIG.STAGE_1_HINT;
+        }
+
+        // Jika sedang di tahap 2, render ulang galeri
+        if (currentStage === 2) {
+          renderStage2Gallery();
+        }
+
+        closeAdminModal();
+      } catch (e) {
+        alert("Gagal menyimpan ke LocalStorage: " + e.message);
+      }
+    }
+
+    // 2. Download file index.html baru yang sudah tertanam konfigurasi ini
+    function adminDownloadNewIndexHtml() {
+      soundBeepClick();
+      readCurrentAdminInputs();
+
+      // Dapatkan kode sumber halaman saat ini
+      let htmlContent = "<!DOCTYPE html>\n" + document.documentElement.outerHTML;
+
+      // Buat blok JSON konfigurasi baru
+      const newConfigJson = JSON.stringify(QUEST_CONFIG, null, 2);
+
+      // Ganti blok DEFAULT_QUEST_CONFIG di dalam kode HTML
+      const configRegex = /const DEFAULT_QUEST_CONFIG = \{[\s\S]*?\};\n/m;
+      if (configRegex.test(htmlContent)) {
+        htmlContent = htmlContent.replace(configRegex, `const DEFAULT_QUEST_CONFIG = ${newConfigJson};\n`);
+      }
+
+      // Pastikan modal tertutup di dalam file yang didownload
+      htmlContent = htmlContent.replace('id="modalAdmin" class="modal-overlay"', 'id="modalAdmin" class="modal-overlay hidden"');
+
+      // Trigger download file index.html
+      const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+      const downloadUrl = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = "index.html";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(downloadUrl);
+
+      soundAccessGranted();
+      alert("SUKSES MENGUNDUH!\nFile 'index.html' baru telah berhasil di-download.\n\nGanti file index.html lama di folder proyek Anda dengan file yang baru ini, lalu unggah ke GitHub Pages.");
+    }
+
+    // 3. Reset ke Default
+    function adminResetToDefault() {
+      soundBeepClick();
+      if (confirm("Apakah Anda yakin ingin mereset seluruh pengaturan kembali ke bawaan semula?")) {
+        localStorage.removeItem("YB_QUEST_CONFIG");
+        QUEST_CONFIG = JSON.parse(JSON.stringify(DEFAULT_QUEST_CONFIG));
+        populateAdminForm();
+        soundAccessGranted();
+        alert("Pengaturan berhasil di-reset ke bawaan semula!");
+      }
+    }
+
+    /* ========================================================================
+       8. BASE64 TOOLKIT MODAL LOGIC (UNTUK PANITIA BUKU TAHUNAN)
+       ======================================================================== */
+    const modalBase64 = document.getElementById("modalBase64");
+    document.getElementById("btnBase64Helper").addEventListener("click", () => {
+      soundBeepClick();
+      const input = document.getElementById("base64InputText");
+      if (!input.value) {
+        input.value = window.location.href;
+      }
+      modalBase64.classList.remove("hidden");
+    });
+
+    function closeBase64Modal() {
+      soundBeepClick();
+      modalBase64.classList.add("hidden");
+    }
+
+    function handleBase64Encode() {
+      soundBeepClick();
+      const rawText = document.getElementById("base64InputText").value.trim();
+      const output = document.getElementById("base64OutputText");
+      if (!rawText) {
+        output.value = "ERROR: Masukkan teks atau URL terlebih dahulu!";
+        return;
+      }
+      try {
+        const encoded = btoa(unescape(encodeURIComponent(rawText)));
+        output.value = encoded;
+      } catch (e) {
+        output.value = "ERROR GAGAL ENCODE: " + e.message;
+      }
+    }
+
+    function handleBase64Decode() {
+      soundBeepClick();
+      const rawText = document.getElementById("base64InputText").value.trim();
+      const output = document.getElementById("base64OutputText");
+      if (!rawText) {
+        output.value = "ERROR: Masukkan string Base64 terlebih dahulu!";
+        return;
+      }
+      try {
+        const decoded = decodeURIComponent(escape(atob(rawText)));
+        output.value = decoded;
+      } catch (e) {
+        output.value = "ERROR GAGAL DECODE: " + e.message;
+      }
+    }
+
+    // Inisialisasi awal
+    window.addEventListener("DOMContentLoaded", () => {
+      if (QUEST_CONFIG.STAGE_1_HINT) {
+        document.getElementById("stage1HintText").textContent = QUEST_CONFIG.STAGE_1_HINT;
+      }
+      renderStage2Gallery();
+
+      // Tutup modal dengan tombol Escape
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeAdminModal();
+          closePinModal();
+          closeInspectModal();
+          closeBase64Modal();
+        }
+      });
+
+      // Tutup modal jika klik di latar belakang hitam (backdrop)
+      document.querySelectorAll(".modal-overlay").forEach(overlay => {
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) {
+            overlay.classList.add("hidden");
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
