@@ -561,45 +561,103 @@
     }
 
     /* ==========================================================================
-       5. STAGE 3: RESOLUTION & YOUTUBE EMBED
+       5. STAGE 3: RESOLUTION - KODE KUNCI TRANSMISI & HINT YOUTUBE
        ========================================================================== */
-    .video-section {
-      width: 100%;
-      max-width: 780px;
-      margin: 16px auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .video-badge {
-      display: inline-block;
-      padding: 6px 14px;
-      background: rgba(0, 255, 102, 0.1);
+    .secret-code-card {
+      background: rgba(0, 20, 10, 0.85);
       border: 1px solid var(--term-green);
-      color: var(--term-green);
-      font-weight: bold;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
-      text-transform: uppercase;
-    }
-
-    .video-viewport {
-      width: 100%;
-      aspect-ratio: 16 / 9;
-      background: #000;
-      border: 2px solid var(--term-green);
-      box-shadow: 0 0 25px var(--term-green-glow);
-      position: relative;
+      box-shadow: 0 0 25px rgba(0, 255, 102, 0.2), inset 0 0 20px rgba(0, 255, 102, 0.06);
+      padding: 24px;
       border-radius: 4px;
-      overflow: hidden;
+      position: relative;
     }
 
-    .video-viewport iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
+    .secret-code-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed var(--term-green-dim);
+      padding-bottom: 8px;
+      margin-bottom: 20px;
+      font-size: 0.82rem;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .secret-code-display-box {
+      background: rgba(0, 10, 5, 0.95);
+      border: 2px solid var(--term-green);
+      box-shadow: inset 0 0 15px rgba(0, 255, 102, 0.2), 0 0 18px rgba(0, 255, 102, 0.25);
+      padding: 20px 16px;
+      text-align: center;
+      border-radius: 4px;
+      margin-bottom: 20px;
+    }
+
+    .secret-code-label {
       display: block;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      color: var(--term-green-dim);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+
+    .secret-code-value {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ffffff;
+      letter-spacing: 4px;
+      text-shadow: 0 0 12px var(--term-green), 0 0 20px var(--term-green-glow);
+      user-select: all;
+      word-break: break-all;
+      margin: 8px 0;
+      font-family: var(--font-mono);
+    }
+
+    .youtube-hint-box {
+      background: rgba(255, 51, 51, 0.05);
+      border: 1px solid rgba(255, 51, 51, 0.35);
+      border-left: 4px solid var(--term-red);
+      padding: 16px 18px;
+      border-radius: 0 4px 4px 0;
+      margin-bottom: 18px;
+    }
+
+    .youtube-hint-title {
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: var(--term-red);
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .youtube-hint-text {
+      color: #ffd6d6;
+      font-size: 0.92rem;
+      line-height: 1.7;
+    }
+
+    .code-highlight {
+      background: rgba(0, 0, 0, 0.8);
+      border: 1px solid rgba(0, 255, 102, 0.4);
+      color: var(--term-green);
+      padding: 3px 8px;
+      border-radius: 3px;
+      display: inline-block;
+      margin: 4px 0;
+      word-break: break-all;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+    }
+
+    .hint-id-placeholder {
+      color: var(--term-amber);
+      font-weight: bold;
     }
 
     .action-button-group {
@@ -1114,32 +1172,64 @@
       </section>
 
       <!-- ====================================================================
-           TAHAP 3: RESOLUSI & YOUTUBE UNLISTED EMBED
+           TAHAP 3: RESOLUSI KODE TRANSMISI & PETUNJUK YOUTUBE
            ==================================================================== -->
       <section id="stage3" class="hidden" aria-labelledby="stage3-title">
-        <h2 id="stage3-title">TAHAP 3: AKSES REKAMAN DIBERIKAN</h2>
-        <p class="system-desc">
-          Enkripsi berhasil ditembus. Transmisi video rahasia sedang diputar langsung dari peladen arsip.
-        </p>
-
-        <div class="video-section">
-          <div id="videoBadge" class="video-badge">
-            MEMUAT REKAMAN...
+        <div class="narrative-container">
+          <div class="narrative-badge">
+            <span class="blinking-dot">●</span> OTORISASI AKHIR TERCAPAI // FRAGMEN DITEMUKAN
           </div>
 
-          <!-- Wadah Dynamic iFrame YouTube -->
-          <div class="video-viewport" id="videoContainer">
-            <!-- Elemen iframe dirakit secara dinamis oleh JavaScript -->
-          </div>
+          <h2 id="stage3-title" style="margin-bottom: 14px; color: var(--term-green);">
+            TAHAP 3: KODE TRANSMISI RAHASIA
+          </h2>
+          <p class="system-desc">
+            Enkripsi sektor visual berhasil ditembus! Sistem telah mendekripsi kunci transmisi rahasia yang terkunci di dalam arsip.
+          </p>
 
-          <!-- Navigasi Percabangan -->
-          <div class="action-button-group">
-            <button type="button" class="btn-secondary" onclick="returnToStage2()">
-              [ ↺ COBA JALUR OBJEK LAIN ]
-            </button>
-            <button type="button" class="btn-secondary" onclick="resetToBeginning()">
-              [ ⌂ KUNCI ULANG TERMINAL ]
-            </button>
+          <div class="secret-code-card">
+            <div class="secret-code-meta">
+              <span id="secretSectorLabel" class="sender-tag">[SEKTOR: TERDEKRIPSI]</span>
+              <span id="secretTimestamp" style="color: var(--term-green-dim); font-size: 0.8rem;">STATUS: KUNCI DIBUKA</span>
+            </div>
+
+            <div class="secret-code-display-box">
+              <span class="secret-code-label">KUNCI ID TRANSMISI RAHASIA:</span>
+              <div class="secret-code-value" id="secretCodeValue">
+                <!-- Diisi dinamis -->
+              </div>
+              <button type="button" id="btnCopyCode" class="btn-link" onclick="copySecretCode()" style="margin-top: 10px; font-size: 0.85rem; padding: 6px 14px;">
+                📋 SALIN KODE KE CLIPBOARD
+              </button>
+              <div id="copyNotice" class="status-msg success hidden" style="font-size: 0.8rem; margin-top: 6px;"></div>
+            </div>
+
+            <!-- Petunjuk Mengarah ke YouTube -->
+            <div class="youtube-hint-box">
+              <div class="youtube-hint-title">
+                <span>🔴 [PETUNJUK LOKASI PENYIMPANAN TRANSMISI]</span>
+              </div>
+              <div id="secretYtHint" class="youtube-hint-text">
+                <!-- Diisi dinamis -->
+              </div>
+            </div>
+
+            <!-- Tombol Buka YouTube Langsung jika pemain ingin uji coba -->
+            <div style="text-align: center; margin-top: 18px;">
+              <a id="btnOpenYouTubeDirect" href="#" target="_blank" rel="noopener noreferrer" class="btn-submit" style="display: inline-block; text-decoration: none; width: auto; min-width: 280px; text-align: center;">
+                ▶ BUKA LANGSUNG DI YOUTUBE
+              </a>
+            </div>
+
+            <!-- Navigasi Percabangan -->
+            <div class="action-button-group" style="margin-top: 24px; justify-content: center; gap: 12px;">
+              <button type="button" class="btn-secondary" onclick="returnToStage2()">
+                [ ↺ COBA JALUR OBJEK LAIN ]
+              </button>
+              <button type="button" class="btn-secondary" onclick="resetToBeginning()">
+                [ ⌂ KUNCI ULANG TERMINAL ]
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -1362,6 +1452,19 @@
         <div id="adminCluesList">
           <!-- Diisi secara dinamis oleh JavaScript -->
         </div>
+
+        <!-- Petunjuk Arah YouTube Tahap 3 -->
+        <div class="form-group" style="margin-top: 16px; border-top: 1px dashed var(--term-green-dim); padding-top: 12px;">
+          <label for="adminYouTubeHint">Petunjuk Mengarah ke YouTube (Tahap 3):</label>
+          <textarea 
+            id="adminYouTubeHint" 
+            class="admin-input" 
+            rows="4" 
+            style="resize: vertical; font-size: 0.85rem;"
+            placeholder="Tuliskan petunjuk yang mengarahkan pemain ke YouTube. Gunakan [KODE] sebagai variabel ID video..."
+          ></textarea>
+          <span class="helper-text">Petunjuk ini akan muncul di bawah kode 11 karakter saat pemain berhasil menebak objek di Tahap 2. Gunakan tag <code>[KODE]</code> di dalam teks untuk meletakkan kode video secara otomatis.</span>
+        </div>
       </section>
 
       <!-- Bagian 3: Keamanan Panel Admin -->
@@ -1455,7 +1558,10 @@
           image: "clue_rooftop.jpg",
           videoId: "L_LUpnjgPso"
         }
-      ]
+      ],
+
+      // Petunjuk Arah YouTube Tahap 3
+      YOUTUBE_HINT: "Kombinasi 11 karakter di atas bukanlah deretan huruf acak. Ini adalah kode kunci transmisi video rahasia pada platform berbagi video berlogo tombol 'Play' merah (YouTube).\n\nSilakan buka tab baru di browser Anda dan akses tautan berikut:\nhttps://youtu.be/[KODE]\natau:\nhttps://www.youtube.com/watch?v=[KODE]"
     };
 
     // Objek Konfigurasi Aktif (Bisa dimuat dari localStorage jika pernah disimpan lewat Admin Panel)
@@ -1471,6 +1577,9 @@
             QUEST_CONFIG = Object.assign({}, DEFAULT_QUEST_CONFIG, parsed);
             if (!QUEST_CONFIG.TRIVIA_QUESTIONS || !Array.isArray(QUEST_CONFIG.TRIVIA_QUESTIONS)) {
               QUEST_CONFIG.TRIVIA_QUESTIONS = JSON.parse(JSON.stringify(DEFAULT_QUEST_CONFIG.TRIVIA_QUESTIONS));
+            }
+            if (!QUEST_CONFIG.YOUTUBE_HINT) {
+              QUEST_CONFIG.YOUTUBE_HINT = DEFAULT_QUEST_CONFIG.YOUTUBE_HINT;
             }
             console.log("[YB QUEST] Konfigurasi kustom dimuat dari LocalStorage.");
           }
@@ -1907,15 +2016,15 @@
 
         soundAccessGranted();
         statusEl.className = "status-msg success";
-        statusEl.textContent = `[DEKRIPSI SUKSES] Objek teridentifikasi: ${enteredPassword}. Menyiapkan video...`;
+        statusEl.textContent = `[DEKRIPSI SUKSES] Objek teridentifikasi: ${enteredPassword}. Mengambil kunci transmisi...`;
 
         setTimeout(() => {
           document.getElementById("stage2").classList.add("hidden");
           document.getElementById("stage3").classList.remove("hidden");
-          document.getElementById("clearanceBadge").textContent = `LEVEL 2 [${enteredPassword}]`;
+          document.getElementById("clearanceBadge").textContent = `LEVEL 3 [${enteredPassword}]`;
           currentStage = 3;
 
-          embedYouTubeVideo(enteredPassword, videoId);
+          displaySecretYouTubeCode(enteredPassword, videoId, matchedClue);
         }, 600);
 
       } else {
@@ -1930,35 +2039,113 @@
     }
 
     /* ========================================================================
-       5. TAHAP 3: DYNAMIC EMBED YOUTUBE IFRAME
+       5. TAHAP 3: RESOLUSI KODE TRANSMISI & PETUNJUK YOUTUBE
        ======================================================================== */
-    function embedYouTubeVideo(objectName, videoId) {
-      const container = document.getElementById("videoContainer");
-      const badge = document.getElementById("videoBadge");
-
+    function displaySecretYouTubeCode(objectName, videoId, matchedClue) {
       const cleanVideoId = extractYouTubeId(videoId);
-      badge.textContent = `JALUR DIBUKA: [${objectName}] // ID DOKUMEN: ${cleanVideoId}`;
 
-      // Dynamic Iframe Assembly
-      container.innerHTML = `
-        <iframe 
-          id="ytPlayer"
-          src="https://www.youtube.com/embed/${cleanVideoId}?autoplay=1&rel=0&modestbranding=1" 
-          title="Video Rahasia YB: ${objectName}"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          allowfullscreen>
-        </iframe>
-      `;
+      const sectorEl = document.getElementById("secretSectorLabel");
+      if (sectorEl) sectorEl.textContent = `[SEKTOR: ${objectName}]`;
+
+      const now = new Date();
+      const timeStr = now.toLocaleTimeString("id-ID");
+      const tsEl = document.getElementById("secretTimestamp");
+      if (tsEl) tsEl.textContent = `STATUS: KUNCI DIBUKA (${timeStr})`;
+
+      // Tampilkan kode YouTube di box glowing
+      const codeValEl = document.getElementById("secretCodeValue");
+      if (codeValEl) codeValEl.textContent = cleanVideoId || "TIDAK_DITEMUKAN";
+
+      // Update link tombol direct YouTube
+      const directBtn = document.getElementById("btnOpenYouTubeDirect");
+      if (directBtn) {
+        directBtn.href = `https://www.youtube.com/watch?v=${cleanVideoId}`;
+      }
+
+      // Reset copy status
+      const copyNotice = document.getElementById("copyNotice");
+      if (copyNotice) {
+        copyNotice.classList.add("hidden");
+        copyNotice.textContent = "";
+      }
+
+      // Pasang teks petunjuk yang mengarah ke YouTube
+      const customHint = (matchedClue && matchedClue.ytHint) ? matchedClue.ytHint : QUEST_CONFIG.YOUTUBE_HINT;
+      const hintContainer = document.getElementById("secretYtHint");
+
+      if (hintContainer) {
+        if (customHint && customHint.trim()) {
+          hintContainer.innerHTML = customHint
+            .replace(/\[KODE\]/g, `<span class="hint-id-placeholder">${cleanVideoId}</span>`)
+            .replace(/\n/g, "<br>");
+        } else {
+          hintContainer.innerHTML = `
+            Kombinasi 11 karakter di atas bukanlah deretan huruf acak. Ini adalah kode kunci transmisi video rahasia pada platform berbagi video berlogo tombol <strong>'Play' merah (YouTube)</strong>.
+            <br><br>
+            Buka tab baru di browser Anda dan akses salah satu tautan berikut:
+            <br>
+            <code class="code-highlight">https://youtu.be/<span class="hint-id-placeholder">${cleanVideoId}</span></code>
+            <br>atau:
+            <br>
+            <code class="code-highlight">https://www.youtube.com/watch?v=<span class="hint-id-placeholder">${cleanVideoId}</span></code>
+          `;
+        }
+      }
+    }
+
+    // Fungsi salin kode ke clipboard
+    function copySecretCode() {
+      soundBeepClick();
+      const codeEl = document.getElementById("secretCodeValue");
+      const code = codeEl ? codeEl.textContent.trim() : "";
+      if (!code) return;
+
+      const notice = document.getElementById("copyNotice");
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(code).then(() => {
+          soundAccessGranted();
+          if (notice) {
+            notice.classList.remove("hidden");
+            notice.textContent = "✓ KODE BERHASIL DISALIN KE CLIPBOARD!";
+            setTimeout(() => { notice.classList.add("hidden"); }, 3000);
+          }
+        }).catch(() => {
+          fallbackCopyText(code, notice);
+        });
+      } else {
+        fallbackCopyText(code, notice);
+      }
+    }
+
+    function fallbackCopyText(text, noticeEl) {
+      try {
+        const textarea = document.createElement("textarea");
+        textarea.value = text;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+
+        soundAccessGranted();
+        if (noticeEl) {
+          noticeEl.classList.remove("hidden");
+          noticeEl.textContent = "✓ KODE BERHASIL DISALIN!";
+          setTimeout(() => { noticeEl.classList.add("hidden"); }, 3000);
+        }
+      } catch (e) {
+        alert("Gagal menyalin otomatis. Silakan salin manual: " + text);
+      }
     }
 
     function returnToStage2() {
       soundBeepClick();
-      document.getElementById("videoContainer").innerHTML = "";
-
       document.getElementById("stage3").classList.add("hidden");
       renderStage2Gallery();
       document.getElementById("stage2").classList.remove("hidden");
-      document.getElementById("clearanceBadge").textContent = "LEVEL 1 (STAGE 2)";
+      document.getElementById("clearanceBadge").textContent = "LEVEL 2 (CABANG VISUAL)";
 
       const input2 = document.getElementById("inputStage2");
       input2.value = "";
@@ -2097,6 +2284,9 @@
 
       const adminNoticeEl = document.getElementById("adminCreatorDeclineNotice");
       if (adminNoticeEl) adminNoticeEl.value = QUEST_CONFIG.CREATOR_DECLINE_NOTICE || "";
+
+      const adminYtHintEl = document.getElementById("adminYouTubeHint");
+      if (adminYtHintEl) adminYtHintEl.value = QUEST_CONFIG.YOUTUBE_HINT || "";
 
       renderAdminTriviaList();
       renderAdminCluesList();
@@ -2437,6 +2627,9 @@
           if (hEl) item.hint = hEl.value.trim();
         });
       }
+
+      const adminYtHintEl = document.getElementById("adminYouTubeHint");
+      if (adminYtHintEl) QUEST_CONFIG.YOUTUBE_HINT = adminYtHintEl.value.trim();
 
       QUEST_CONFIG.CLUES.forEach((clue, index) => {
         const kwEl = document.getElementById(`clueKeyword_${index}`);
