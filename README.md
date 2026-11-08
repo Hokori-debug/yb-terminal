@@ -58,6 +58,7 @@ Aplikasi ini sudah dilengkapi dengan **Panel Admin Interaktif** langsung di hala
 
 ### Fitur yang Bisa Diatur di Panel Admin:
 * **🔐 Kata Sandi Tahap 1:** Ubah kata sandi tebakan Instagram dan petunjuk teksnya.
+* **📜 Pesan & Narasi Kreator (Tahap 1.5):** Ubah judul pesan, isi kata-kata narasi teka-teki, pertanyaan tantangan, teks tombol, dan pesan penundaan misi.
 * **🖼️ Gambar Clue Tahap 2:**
   - Ketik nama file lokal (misal `clue_labkom.jpg`) atau link gambar.
   - Atau klik tombol **`[ 📁 PILIH FOTO DARI KOMPUTER ]`** untuk memilih gambar langsung dari laptop/HP Anda (gambar otomatis dipratinjau dan disimpan).
