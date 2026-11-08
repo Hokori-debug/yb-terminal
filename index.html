@@ -521,6 +521,46 @@
     }
 
     /* ==========================================================================
+       4.6 STAGE 1.8: TRIVIA / ARSIP INTERROGATION
+       ========================================================================== */
+    .trivia-container {
+      max-width: 820px;
+      margin: 16px auto;
+      text-align: left;
+    }
+
+    .trivia-card {
+      background: rgba(0, 20, 10, 0.85);
+      border: 1px solid var(--term-green);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.15), inset 0 0 20px rgba(0, 255, 102, 0.05);
+      padding: 24px;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .trivia-progress-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed var(--term-green-dim);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      font-size: 0.82rem;
+      color: var(--term-green-dim);
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .trivia-question-text {
+      font-size: 1.12rem;
+      font-weight: bold;
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    /* ==========================================================================
        5. STAGE 3: RESOLUTION & YOUTUBE EMBED
        ========================================================================== */
     .video-section {
@@ -965,7 +1005,7 @@
             </div>
 
             <div class="action-button-group" style="margin-top: 20px; gap: 14px;">
-              <button type="button" id="btnAcceptQuest" class="btn-submit" onclick="proceedToStage2()"
+              <button type="button" id="btnAcceptQuest" class="btn-submit" onclick="handleAcceptNarrative()"
                 style="margin-top: 0; width: auto; min-width: 260px;">
                 [ ⚡ LANJUTKAN BERBURU RAHASIA ]
               </button>
@@ -979,6 +1019,59 @@
               style="margin-top: 14px; text-align: center; border: 1px dashed var(--term-red); padding: 8px 12px; background: rgba(255, 51, 51, 0.08);">
               <!-- Diisi dinamis -->
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
+           TAHAP 1.8: INTEROGASI ARSIP & PERTANYAAN TEKA-TEKI
+           ==================================================================== -->
+      <section id="stageTrivia" class="hidden" aria-labelledby="stageTrivia-title">
+        <div class="trivia-container">
+          <div class="narrative-badge">
+            <span class="blinking-dot">●</span> PROTOKOL INTEROGASI // VALIDASI MEMORI BUKU TAHUNAN
+          </div>
+
+          <h2 id="stageTrivia-title" style="margin-bottom: 14px; color: var(--term-green);">
+            VALIDASI PENGETAHUAN ARSIP
+          </h2>
+
+          <div class="trivia-card">
+            <div class="trivia-progress-bar">
+              <span class="sender-tag">[STATUS: TAHAP INTEROGASI TEKA-TEKI]</span>
+              <span id="triviaProgress" style="color: var(--term-amber); font-weight: bold;">PERTANYAAN 1 DARI 1</span>
+            </div>
+
+            <p id="triviaQuestionText" class="trivia-question-text">
+              <!-- Diisi dinamis -->
+            </p>
+
+            <div id="triviaHintText" class="clue-hint" style="margin-bottom: 16px;">
+              <!-- Diisi dinamis -->
+            </div>
+
+            <form id="formTrivia" onsubmit="handleTriviaSubmit(event)" autocomplete="off">
+              <div class="input-box-wrapper" style="margin: 12px 0; max-width: 100%;">
+                <div class="cmd-line">
+                  <span class="cmd-prefix">root@yb-quest/interogasi:~$</span>
+                  <input 
+                    type="text" 
+                    id="inputTrivia" 
+                    class="term-input" 
+                    placeholder="KETIK JAWABAN ANDA..." 
+                    required 
+                    spellcheck="false"
+                    aria-label="Jawaban pertanyaan teka-teki"
+                    oninput="this.value = this.value.toUpperCase()"
+                  >
+                </div>
+                <button type="submit" id="btnSubmitTrivia" class="btn-submit" style="width: auto; min-width: 260px;">
+                  [ VERIFIKASI JAWABAN ]
+                </button>
+              </div>
+            </form>
+
+            <div id="statusTrivia" class="status-msg" aria-live="polite"></div>
           </div>
         </div>
       </section>
@@ -1232,6 +1325,24 @@
         </div>
       </section>
 
+      <!-- Bagian 1.8: Daftar Pertanyaan Teka-Teki (Tahap Interogasi) -->
+      <section class="admin-section">
+        <div class="admin-section-title" style="justify-content: space-between;">
+          <span>❓ TAHAP 1.8: PERTANYAAN TEKA-TEKI (SEBELUM GALERI GAMBAR)</span>
+          <button type="button" class="admin-btn-action admin-btn-amber" onclick="adminAddNewTrivia()">
+            ＋ TAMBAH PERTANYAAN BARU
+          </button>
+        </div>
+        <p class="helper-text" style="margin-bottom: 8px;">
+          Pemain harus menjawab pertanyaan-pertanyaan ini setelah mengklik tombol 'Lanjutkan Teka-Teki', sebelum masuk ke galeri foto clue blur.
+        </p>
+        <div id="adminTriviaNotice" class="status-msg success" style="margin-bottom: 8px; font-size: 0.8rem; min-height: 1.2rem;"></div>
+
+        <div id="adminTriviaList">
+          <!-- Diisi secara dinamis oleh JavaScript -->
+        </div>
+      </section>
+
       <!-- Bagian 2: Daftar Kartu Clue & Video YouTube (Tahap 2 & 3) -->
       <section class="admin-section">
         <div class="admin-section-title" style="justify-content: space-between;">
@@ -1311,6 +1422,16 @@
       CREATOR_BTN_DECLINE: "[ ✖ BATALKAN / TETAP DI SINI ]",
       CREATOR_DECLINE_NOTICE: "[AKSES DITUNDA]: Anda memilih tidak melanjutkan teka-teki saat ini. Gerbang arsip tetap terbuka jika nanti Anda siap memecahkan kodenya.",
 
+      // Daftar Pertanyaan Teka-Teki / Interogasi Arsip (Tahap 1.8)
+      TRIVIA_QUESTIONS: [
+        {
+          id: "q1",
+          question: "Berapa kali Fakhri muncul di buku tahunan?",
+          answer: "3, TIGA",
+          hint: "[PETUNJUK]: Coba periksa dan hitung dengan teliti pada halaman foto kelas dan galeri kegiatan."
+        }
+      ],
+
       // Daftar Objek/Sektor Tahap 2 & Video YouTube Tahap 3
       CLUES: [
         {
@@ -1348,6 +1469,9 @@
           const parsed = JSON.parse(saved);
           if (parsed && parsed.STAGE_1_PASSWORD && Array.isArray(parsed.CLUES)) {
             QUEST_CONFIG = Object.assign({}, DEFAULT_QUEST_CONFIG, parsed);
+            if (!QUEST_CONFIG.TRIVIA_QUESTIONS || !Array.isArray(QUEST_CONFIG.TRIVIA_QUESTIONS)) {
+              QUEST_CONFIG.TRIVIA_QUESTIONS = JSON.parse(JSON.stringify(DEFAULT_QUEST_CONFIG.TRIVIA_QUESTIONS));
+            }
             console.log("[YB QUEST] Konfigurasi kustom dimuat dari LocalStorage.");
           }
         }
@@ -1573,6 +1697,114 @@
       typewriterEffect(textContainer, msg, 18);
     }
 
+    function handleAcceptNarrative() {
+      soundAccessGranted();
+      if (typewriterTimeout) {
+        clearTimeout(typewriterTimeout);
+        typewriterTimeout = null;
+      }
+      document.getElementById("stageNarrative").classList.add("hidden");
+
+      const triviaList = QUEST_CONFIG.TRIVIA_QUESTIONS || [];
+      if (triviaList.length > 0) {
+        startTriviaStage();
+      } else {
+        proceedToStage2();
+      }
+    }
+
+    /* ========================================================================
+       3.8 TAHAP 1.8: INTEROGASI ARSIP & PERTANYAAN TEKA-TEKI
+       ======================================================================== */
+    let currentTriviaIndex = 0;
+
+    function startTriviaStage() {
+      currentTriviaIndex = 0;
+      document.getElementById("stageNarrative").classList.add("hidden");
+      document.getElementById("stageTrivia").classList.remove("hidden");
+      document.getElementById("clearanceBadge").textContent = "LEVEL 1.8 (INTEROGASI ARSIP)";
+      currentStage = 1.8;
+      renderCurrentTrivia();
+    }
+
+    function renderCurrentTrivia() {
+      const questions = QUEST_CONFIG.TRIVIA_QUESTIONS || [];
+      if (currentTriviaIndex >= questions.length) {
+        finishTriviaStage();
+        return;
+      }
+
+      const q = questions[currentTriviaIndex];
+      const total = questions.length;
+      const currentNum = currentTriviaIndex + 1;
+
+      document.getElementById("triviaProgress").textContent = `PERTANYAAN ${currentNum} DARI ${total}`;
+      document.getElementById("triviaQuestionText").textContent = q.question;
+
+      const hintEl = document.getElementById("triviaHintText");
+      if (q.hint && q.hint.trim()) {
+        hintEl.textContent = q.hint;
+        hintEl.classList.remove("hidden");
+      } else {
+        hintEl.classList.add("hidden");
+      }
+
+      const inputEl = document.getElementById("inputTrivia");
+      inputEl.value = "";
+      const statusEl = document.getElementById("statusTrivia");
+      statusEl.textContent = "";
+      statusEl.className = "status-msg";
+      inputEl.focus();
+    }
+
+    function handleTriviaSubmit(event) {
+      event.preventDefault();
+      const questions = QUEST_CONFIG.TRIVIA_QUESTIONS || [];
+      const q = questions[currentTriviaIndex];
+      if (!q) return;
+
+      const inputEl = document.getElementById("inputTrivia");
+      const statusEl = document.getElementById("statusTrivia");
+      const userAns = inputEl.value.trim().toUpperCase();
+      if (!userAns) return;
+
+      // Mendukung banyak variasi jawaban jika dipisah koma (contoh: 3, TIGA, 3 KALI)
+      const validAnswers = (q.answer || "")
+        .split(",")
+        .map(a => a.trim().toUpperCase())
+        .filter(Boolean);
+
+      const isCorrect = validAnswers.some(ans => ans === userAns);
+
+      if (isCorrect) {
+        soundAccessGranted();
+        currentTriviaIndex++;
+        if (currentTriviaIndex < questions.length) {
+          statusEl.className = "status-msg success";
+          statusEl.textContent = `[JAWABAN TEPAT!] Membuka pertanyaan berikutnya (${currentTriviaIndex + 1}/${questions.length})...`;
+          setTimeout(() => {
+            renderCurrentTrivia();
+          }, 700);
+        } else {
+          statusEl.className = "status-msg success";
+          statusEl.textContent = "[SEMUA PERTANYAAN TERJAWAB!] Membuka arsip visual...";
+          setTimeout(() => {
+            finishTriviaStage();
+          }, 800);
+        }
+      } else {
+        soundAccessDenied();
+        statusEl.className = "status-msg error";
+        statusEl.textContent = "[JAWABAN TIDAK COCOK] Periksa kembali buku tahunan Anda!";
+        inputEl.select();
+      }
+    }
+
+    function finishTriviaStage() {
+      document.getElementById("stageTrivia").classList.add("hidden");
+      proceedToStage2();
+    }
+
     function proceedToStage2() {
       soundAccessGranted();
       if (typewriterTimeout) {
@@ -1580,6 +1812,7 @@
         typewriterTimeout = null;
       }
       document.getElementById("stageNarrative").classList.add("hidden");
+      document.getElementById("stageTrivia").classList.add("hidden");
       renderStage2Gallery();
       document.getElementById("stage2").classList.remove("hidden");
       document.getElementById("clearanceBadge").textContent = "LEVEL 2 (CABANG VISUAL)";
@@ -1743,10 +1976,17 @@
       document.getElementById("videoContainer").innerHTML = "";
       document.getElementById("stage3").classList.add("hidden");
       document.getElementById("stage2").classList.add("hidden");
+      document.getElementById("stageTrivia").classList.add("hidden");
       document.getElementById("stageNarrative").classList.add("hidden");
       document.getElementById("stage1").classList.remove("hidden");
 
       document.getElementById("clearanceBadge").textContent = "LEVEL 0 (PUBLIC)";
+
+      currentTriviaIndex = 0;
+      const inputTrivia = document.getElementById("inputTrivia");
+      if (inputTrivia) inputTrivia.value = "";
+      const statusTrivia = document.getElementById("statusTrivia");
+      if (statusTrivia) statusTrivia.textContent = "";
 
       const input1 = document.getElementById("inputStage1");
       input1.value = "";
@@ -1858,7 +2098,121 @@
       const adminNoticeEl = document.getElementById("adminCreatorDeclineNotice");
       if (adminNoticeEl) adminNoticeEl.value = QUEST_CONFIG.CREATOR_DECLINE_NOTICE || "";
 
+      renderAdminTriviaList();
       renderAdminCluesList();
+    }
+
+    // Render daftar pertanyaan trivia di Admin
+    function renderAdminTriviaList() {
+      const container = document.getElementById("adminTriviaList");
+      if (!container) return;
+      container.innerHTML = "";
+
+      const list = QUEST_CONFIG.TRIVIA_QUESTIONS || [];
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div style="padding: 10px; background: rgba(255, 176, 0, 0.08); border-left: 3px solid var(--term-amber); margin-bottom: 8px;">
+            <p style="color: var(--term-amber); font-size: 0.82rem; margin: 0;">
+              ℹ️ Belum ada pertanyaan teka-teki. Jika daftar ini kosong, pemain akan langsung diarahkan ke Galeri Clue Foto Blur setelah membaca pesan kreator.
+            </p>
+          </div>
+        `;
+        return;
+      }
+
+      list.forEach((item, index) => {
+        const row = document.createElement("div");
+        row.className = "admin-card-row";
+        row.id = `adminTriviaRow_${index}`;
+
+        row.innerHTML = `
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <strong style="color: var(--term-green); font-size: 0.85rem;">PERTANYAAN #${index + 1}</strong>
+            <button type="button" class="admin-btn-action admin-btn-delete" onclick="adminDeleteTrivia(${index})" title="Hapus pertanyaan ini">
+              [ 🗑 HAPUS PERTANYAAN ]
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label>TEKS PERTANYAAN:</label>
+            <input 
+              type="text" 
+              class="admin-input" 
+              id="triviaQ_${index}" 
+              value="${(item.question || '').replace(/"/g, '&quot;')}" 
+              placeholder="Contoh: Berapa kali Fakhri muncul di buku tahunan?"
+            >
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+            <div class="form-group">
+              <label>KUNCI JAWABAN (Bisa dipisah koma untuk variasi):</label>
+              <input 
+                type="text" 
+                class="admin-input" 
+                id="triviaA_${index}" 
+                value="${(item.answer || '').replace(/"/g, '&quot;')}" 
+                placeholder="Contoh: 3, TIGA, 3 KALI"
+                oninput="this.value = this.value.toUpperCase()"
+              >
+              <span class="helper-text">Pemain mengetik salah satu jawaban ini untuk lolos (tidak peka huruf kapital).</span>
+            </div>
+
+            <div class="form-group">
+              <label>PETUNJUK TEKS (OPSIONAL):</label>
+              <input 
+                type="text" 
+                class="admin-input" 
+                id="triviaH_${index}" 
+                value="${(item.hint || '').replace(/"/g, '&quot;')}" 
+                placeholder="Contoh: Coba periksa di halaman kelas..."
+              >
+              <span class="helper-text">Petunjuk yang muncul di bawah pertanyaan jika pemain membutuhkan bantuan.</span>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    function adminAddNewTrivia() {
+      soundBeepClick();
+      readCurrentAdminInputs();
+      if (!QUEST_CONFIG.TRIVIA_QUESTIONS) {
+        QUEST_CONFIG.TRIVIA_QUESTIONS = [];
+      }
+      const nextNum = QUEST_CONFIG.TRIVIA_QUESTIONS.length + 1;
+      QUEST_CONFIG.TRIVIA_QUESTIONS.push({
+        id: `q_${Date.now()}`,
+        question: `Pertanyaan teka-teki #${nextNum}...`,
+        answer: "JAWABAN",
+        hint: "[PETUNJUK]: Cek buku tahunan Anda."
+      });
+
+      try {
+        localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
+      } catch (e) { }
+
+      renderAdminTriviaList();
+      const notice = document.getElementById("adminTriviaNotice");
+      if (notice) notice.textContent = `[✓ PERTANYAAN #${nextNum} DITAMBAHKAN] Perubahan langsung tersimpan!`;
+    }
+
+    function adminDeleteTrivia(index) {
+      soundBeepClick();
+      readCurrentAdminInputs();
+      if (!QUEST_CONFIG.TRIVIA_QUESTIONS) return;
+
+      QUEST_CONFIG.TRIVIA_QUESTIONS.splice(index, 1);
+
+      try {
+        localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
+      } catch (e) { }
+
+      renderAdminTriviaList();
+      const notice = document.getElementById("adminTriviaNotice");
+      if (notice) notice.textContent = `[✓ PERTANYAAN BERHASIL DIHAPUS] Perubahan langsung tersimpan!`;
     }
 
     // Render daftar baris clue di Admin
@@ -2073,6 +2427,17 @@
       const adminNoticeEl = document.getElementById("adminCreatorDeclineNotice");
       if (adminNoticeEl) QUEST_CONFIG.CREATOR_DECLINE_NOTICE = adminNoticeEl.value.trim() || "[AKSES DITUNDA]: Anda memilih tidak melanjutkan teka-teki saat ini.";
 
+      if (QUEST_CONFIG.TRIVIA_QUESTIONS && Array.isArray(QUEST_CONFIG.TRIVIA_QUESTIONS)) {
+        QUEST_CONFIG.TRIVIA_QUESTIONS.forEach((item, index) => {
+          const qEl = document.getElementById(`triviaQ_${index}`);
+          const aEl = document.getElementById(`triviaA_${index}`);
+          const hEl = document.getElementById(`triviaH_${index}`);
+          if (qEl) item.question = qEl.value.trim();
+          if (aEl) item.answer = aEl.value.trim().toUpperCase();
+          if (hEl) item.hint = hEl.value.trim();
+        });
+      }
+
       QUEST_CONFIG.CLUES.forEach((clue, index) => {
         const kwEl = document.getElementById(`clueKeyword_${index}`);
         const titleEl = document.getElementById(`clueTitle_${index}`);
@@ -2104,6 +2469,11 @@
         // Jika sedang di tahap 1.5, perbarui tampilan narasi
         if (currentStage === 1.5) {
           showNarrativeStage();
+        }
+
+        // Jika sedang di tahap 1.8, perbarui tampilan kuis
+        if (currentStage === 1.8) {
+          renderCurrentTrivia();
         }
 
         // Jika sedang di tahap 2, render ulang galeri
