@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>YB Quest Terminal // Classified Archive</title>
-  <meta name="description" content="Interactive Alternate Reality Game (ARG) Terminal untuk Buku Tahunan. Pecahkan teka-teki kata sandi untuk membuka arsip tersembunyi.">
+  <meta name="description"
+    content="Interactive Alternate Reality Game (ARG) Terminal untuk Buku Tahunan. Pecahkan teka-teki kata sandi untuk membuka arsip tersembunyi.">
 
   <style>
     /* ==========================================================================
@@ -51,16 +53,15 @@
       content: " ";
       display: block;
       position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%, 
-        rgba(0, 0, 0, 0.35) 50%
-      ), linear-gradient(
-        90deg,
-        rgba(255, 0, 0, 0.03),
-        rgba(0, 255, 0, 0.01),
-        rgba(0, 255, 0, 0.03)
-      );
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%,
+          rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg,
+          rgba(255, 0, 0, 0.03),
+          rgba(0, 255, 0, 0.01),
+          rgba(0, 255, 0, 0.03));
       z-index: 999;
       background-size: 100% 3px, 4px 100%;
       pointer-events: none;
@@ -72,7 +73,10 @@
       content: " ";
       display: block;
       position: fixed;
-      top: 0; left: 0; bottom: 0; right: 0;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      right: 0;
       background: radial-gradient(circle at center, transparent 65%, rgba(0, 0, 0, 0.75) 100%);
       pointer-events: none;
       z-index: 998;
@@ -147,6 +151,7 @@
       border-color: var(--term-amber);
       color: var(--term-amber);
     }
+
     .btn-link.admin-btn:hover {
       background: var(--term-amber);
       color: #000;
@@ -172,7 +177,10 @@
       letter-spacing: 1px;
     }
 
-    h1, h2, h3, h4 {
+    h1,
+    h2,
+    h3,
+    h4 {
       text-transform: uppercase;
       letter-spacing: 2px;
       margin-bottom: 12px;
@@ -282,7 +290,8 @@
       max-width: 320px;
     }
 
-    .btn-submit:hover, .btn-submit:focus {
+    .btn-submit:hover,
+    .btn-submit:focus {
       background: var(--term-green);
       color: #000000;
       box-shadow: 0 0 18px var(--term-green);
@@ -404,6 +413,114 @@
     }
 
     /* ==========================================================================
+       4.5 STAGE 1.5: TRANSMISI PESAN KREATOR & TANTANGAN TEKA-TEKI
+       ========================================================================== */
+    .narrative-container {
+      max-width: 820px;
+      margin: 16px auto;
+      text-align: left;
+    }
+
+    .narrative-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 12px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid var(--term-cyan);
+      color: var(--term-cyan);
+      font-size: 0.8rem;
+      font-weight: bold;
+      letter-spacing: 2px;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+    }
+
+    .blinking-dot {
+      animation: blinkDot 1s infinite;
+      color: var(--term-red);
+      font-size: 0.9rem;
+    }
+
+    @keyframes blinkDot {
+
+      0%,
+      100% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0;
+      }
+    }
+
+    .narrative-box {
+      background: rgba(0, 20, 10, 0.85);
+      border: 1px solid var(--term-green);
+      box-shadow: 0 0 20px rgba(0, 255, 102, 0.15), inset 0 0 20px rgba(0, 255, 102, 0.05);
+      padding: 22px 26px;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .narrative-header-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px dashed var(--term-green-dim);
+      padding-bottom: 8px;
+      margin-bottom: 18px;
+      font-size: 0.82rem;
+      color: var(--term-green-dim);
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .sender-tag {
+      color: var(--term-amber);
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .narrative-text {
+      color: #e6ffed;
+      font-size: 0.96rem;
+      line-height: 1.85;
+      white-space: pre-wrap;
+      word-break: break-word;
+      min-height: 120px;
+      margin-bottom: 18px;
+      position: relative;
+      user-select: text;
+    }
+
+    .narrative-skip-hint {
+      display: block;
+      font-size: 0.75rem;
+      color: rgba(0, 255, 102, 0.65);
+      margin-top: 4px;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+
+    .narrative-question-box {
+      background: rgba(255, 176, 0, 0.08);
+      border-left: 4px solid var(--term-amber);
+      padding: 14px 18px;
+      margin: 18px 0;
+      border-radius: 0 4px 4px 0;
+    }
+
+    .narrative-question {
+      color: var(--term-amber);
+      font-size: 0.92rem;
+      letter-spacing: 0.5px;
+      line-height: 1.6;
+      font-weight: bold;
+    }
+
+    /* ==========================================================================
        5. STAGE 3: RESOLUTION & YOUTUBE EMBED
        ========================================================================== */
     .video-section {
@@ -476,7 +593,10 @@
        ========================================================================== */
     .modal-overlay {
       position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
       background: rgba(0, 0, 0, 0.88);
       z-index: 1000;
       display: flex;
@@ -637,6 +757,7 @@
       border-color: var(--term-red);
       color: var(--term-red);
     }
+
     .admin-btn-delete:hover {
       background: var(--term-red);
       color: #000;
@@ -647,6 +768,7 @@
       border-color: var(--term-amber);
       color: var(--term-amber);
     }
+
     .admin-btn-amber:hover {
       background: var(--term-amber);
       color: #000;
@@ -702,8 +824,16 @@
     }
 
     @keyframes blink {
-      0%, 49% { opacity: 1; }
-      50%, 100% { opacity: 0; }
+
+      0%,
+      49% {
+        opacity: 1;
+      }
+
+      50%,
+      100% {
+        opacity: 0;
+      }
     }
 
     .terminal-footer {
@@ -718,26 +848,31 @@
       body {
         padding: 8px;
       }
+
       .terminal-content {
         padding: 16px 10px;
       }
+
       .gallery-card {
         width: 100%;
         max-width: 320px;
       }
+
       .cmd-prefix {
         font-size: 0.82rem;
       }
+
       .term-input {
         font-size: 0.95rem;
       }
     }
   </style>
 </head>
+
 <body>
 
   <main class="terminal-container" role="main" aria-label="Terminal YB Quest">
-    
+
     <!-- Top System Header Bar -->
     <header class="terminal-bar">
       <div class="terminal-title">
@@ -747,13 +882,14 @@
       <div class="terminal-controls">
         <button id="btnSoundToggle" class="btn-link" title="Nyalakan/Matikan Efek Suara">🔊 SUARA: NYALA</button>
         <button id="btnBase64Helper" class="btn-link" title="Buka Alat Bantu Base64">⚙ BASE64 TOOLKIT</button>
-        <button id="btnAdminPanel" class="btn-link admin-btn" title="Buka Panel Konfigurasi Admin">🛠 PANEL ADMIN</button>
+        <button id="btnAdminPanel" class="btn-link admin-btn" title="Buka Panel Konfigurasi Admin">🛠 PANEL
+          ADMIN</button>
       </div>
     </header>
 
     <!-- Main Viewport Content -->
     <div class="terminal-content">
-      
+
       <!-- ASCII Header Banner -->
       <pre class="banner-text" aria-hidden="true">
 ==============================================================
@@ -783,17 +919,9 @@
           <div class="input-box-wrapper">
             <div class="cmd-line">
               <span class="cmd-prefix">root@yb-quest:~$</span>
-              <input 
-                type="text" 
-                id="inputStage1" 
-                class="term-input" 
-                placeholder="MASUKKAN KATA SANDI..." 
-                autofocus 
-                required 
-                spellcheck="false"
-                aria-label="Kata sandi tahap 1"
-                oninput="this.value = this.value.toUpperCase()"
-              >
+              <input type="text" id="inputStage1" class="term-input" placeholder="MASUKKAN KATA SANDI..." autofocus
+                required spellcheck="false" aria-label="Kata sandi tahap 1"
+                oninput="this.value = this.value.toUpperCase()">
             </div>
             <button type="submit" id="btnSubmitStage1" class="btn-submit">
               [ VERIFIKASI SANDI ]
@@ -805,13 +933,65 @@
       </section>
 
       <!-- ====================================================================
+           TAHAP 1.5: TRANSMISI PESAN KREATOR & TANTANGAN TEKA-TEKI
+           ==================================================================== -->
+      <section id="stageNarrative" class="hidden" aria-labelledby="stageNarrative-title">
+        <div class="narrative-container">
+          <div class="narrative-badge">
+            <span class="blinking-dot">●</span> TRANSMISI TERDEKRIPSI // PESAN RAHASIA
+          </div>
+
+          <h2 id="stageNarrative-title" style="margin-bottom: 14px; color: var(--term-green);">
+            TRANSMISI DARI ARSIP KREATOR
+          </h2>
+
+          <div class="narrative-box">
+            <div class="narrative-header-meta">
+              <span class="sender-tag">[TRANSMISI: KREATOR BUKU TAHUNAN]</span>
+              <span id="narrativeTimestamp">STATUS: DECRYPTED</span>
+            </div>
+
+            <div id="narrativeText" class="narrative-text" title="Klik teks untuk menampilkan seluruh isi seketika">
+              <!-- Diisi dinamis oleh JavaScript -->
+            </div>
+
+            <span class="narrative-skip-hint">💡 Klik pada teks di atas jika ingin menampilkan seluruh pesan seketika
+              tanpa menunggu animasi.</span>
+
+            <div class="narrative-question-box">
+              <p id="narrativeQuestion" class="narrative-question">
+                <!-- Diisi dinamis oleh JavaScript -->
+              </p>
+            </div>
+
+            <div class="action-button-group" style="margin-top: 20px; gap: 14px;">
+              <button type="button" id="btnAcceptQuest" class="btn-submit" onclick="proceedToStage2()"
+                style="margin-top: 0; width: auto; min-width: 260px;">
+                [ ⚡ LANJUTKAN BERBURU RAHASIA ]
+              </button>
+              <button type="button" id="btnDeclineQuest" class="btn-secondary" onclick="handleDeclineQuest()"
+                style="border-color: var(--term-red); color: var(--term-red);">
+                [ ✖ BATALKAN / TETAP DI SINI ]
+              </button>
+            </div>
+
+            <div id="declineNotice" class="status-msg error hidden"
+              style="margin-top: 14px; text-align: center; border: 1px dashed var(--term-red); padding: 8px 12px; background: rgba(255, 51, 51, 0.08);">
+              <!-- Diisi dinamis -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================================================================
            TAHAP 2: CABANG VISUAL (VISUAL BRANCH & GUESSING)
            ==================================================================== -->
       <section id="stage2" class="hidden" aria-labelledby="stage2-title">
         <h2 id="stage2-title">TAHAP 2: DEKRIPSI ARSIP VISUAL</h2>
         <p class="system-desc">
           Otorisasi Tingkat 1 Berhasil. Fragmen visual terdeteksi dari arsip sekolah.<br>
-          Tebak salah satu objek / lokasi rahasia di bawah ini, lalu masukkan namanya untuk membuka rekaman video unlisted yang sesuai.
+          Tebak salah satu objek / lokasi rahasia di bawah ini, lalu masukkan namanya untuk membuka rekaman video
+          unlisted yang sesuai.
         </p>
 
         <div class="clue-hint">
@@ -828,16 +1008,8 @@
           <div class="input-box-wrapper">
             <div class="cmd-line">
               <span class="cmd-prefix">root@yb-quest/stage2:~$</span>
-              <input 
-                type="text" 
-                id="inputStage2" 
-                class="term-input" 
-                placeholder="TEBAK NAMA OBJEK / SANDI..." 
-                required 
-                spellcheck="false"
-                aria-label="Kata sandi tahap 2"
-                oninput="this.value = this.value.toUpperCase()"
-              >
+              <input type="text" id="inputStage2" class="term-input" placeholder="TEBAK NAMA OBJEK / SANDI..." required
+                spellcheck="false" aria-label="Kata sandi tahap 2" oninput="this.value = this.value.toUpperCase()">
             </div>
             <button type="submit" id="btnSubmitStage2" class="btn-submit">
               [ BUKA REKAMAN RAHASIA ]
@@ -882,7 +1054,8 @@
     </div>
 
     <!-- Terminal Footer -->
-    <footer class="terminal-bar" style="border-top: 1px solid var(--term-green-dim); border-bottom: none; font-size: 0.72rem;">
+    <footer class="terminal-bar"
+      style="border-top: 1px solid var(--term-green-dim); border-bottom: none; font-size: 0.72rem;">
       <span>STATUS: RUNNING (CLIENT-SIDE)</span>
       <span>10-YEAR DURABILITY ASSURED</span>
       <span>CLEARANCE: <span id="clearanceBadge">LEVEL 0 (PUBLIC)</span></span>
@@ -905,7 +1078,8 @@
       </div>
       <div class="modal-content">
         <p style="font-size: 0.82rem; margin-bottom: 12px; color: #a4ffc8;">
-          Gunakan utilitas ini untuk meng-encode URL GitHub Pages menjadi string Base64 yang akan dicetak pada Buku Tahunan cetak.
+          Gunakan utilitas ini untuk meng-encode URL GitHub Pages menjadi string Base64 yang akan dicetak pada Buku
+          Tahunan cetak.
         </p>
 
         <label style="font-size: 0.8rem; font-weight: bold;">INPUT TEKS / URL:</label>
@@ -931,18 +1105,23 @@
         <h3 id="inspectTitle" style="color: var(--term-green);">[ INSPEKSI DOKUMEN ARSIP ]</h3>
         <button type="button" class="modal-close" onclick="closeInspectModal()">[X]</button>
       </div>
-      <div style="width: 100%; max-height: 480px; overflow: hidden; border: 2px solid var(--term-green); background: #000; position: relative; margin-bottom: 14px;">
-        <img id="inspectImg" src="" alt="Pratinjau Artefak" style="width: 100%; height: auto; max-height: 480px; object-fit: contain; filter: contrast(1.15) brightness(0.95); display: block; margin: 0 auto;">
+      <div
+        style="width: 100%; max-height: 480px; overflow: hidden; border: 2px solid var(--term-green); background: #000; position: relative; margin-bottom: 14px;">
+        <img id="inspectImg" src="" alt="Pratinjau Artefak"
+          style="width: 100%; height: auto; max-height: 480px; object-fit: contain; filter: contrast(1.15) brightness(0.95); display: block; margin: 0 auto;">
       </div>
       <p id="inspectDesc" style="font-size: 0.85rem; color: #9dfcb7; margin-bottom: 16px;">
         Amati detail visual pada foto di atas secara teliti.<br>
         <strong>Tebak apa nama tempat/objek ini</strong>, lalu ketik jawabannya pada form tebakan di bawah!
       </p>
       <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
-        <button type="button" class="btn-submit" style="max-width: 320px; font-size: 0.9rem;" onclick="focusGuessInput()">
+        <button type="button" class="btn-submit" style="max-width: 320px; font-size: 0.9rem;"
+          onclick="focusGuessInput()">
           [ ✍ KETIK TEBAKAN DI FORM ]
         </button>
-        <button type="button" class="btn-link" style="border-color: var(--term-green); color: var(--term-green); padding: 8px 16px;" onclick="closeInspectModal()">
+        <button type="button" class="btn-link"
+          style="border-color: var(--term-green); color: var(--term-green); padding: 8px 16px;"
+          onclick="closeInspectModal()">
           [ TUTUP INSPEKSI ]
         </button>
       </div>
@@ -953,7 +1132,8 @@
        MODAL: PIN PROMPT OTORISASI ADMIN
        ======================================================================== -->
   <div id="modalPinPrompt" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
-    <div class="modal-box" style="max-width: 440px; text-align: center; border-color: var(--term-amber); box-shadow: 0 0 25px rgba(255, 176, 0, 0.4);">
+    <div class="modal-box"
+      style="max-width: 440px; text-align: center; border-color: var(--term-amber); box-shadow: 0 0 25px rgba(255, 176, 0, 0.4);">
       <div class="modal-header admin-header">
         <h3 id="pinTitle" style="color: var(--term-amber); margin: 0 auto;">[ OTORISASI PANEL ADMIN ]</h3>
       </div>
@@ -962,24 +1142,20 @@
       </p>
 
       <form onsubmit="handlePinSubmit(event)">
-        <div style="background: rgba(0, 20, 5, 0.9); border: 1px solid var(--term-amber); padding: 6px 12px; margin-bottom: 12px; display: flex; align-items: center;">
+        <div
+          style="background: rgba(0, 20, 5, 0.9); border: 1px solid var(--term-amber); padding: 6px 12px; margin-bottom: 12px; display: flex; align-items: center;">
           <span style="color: var(--term-amber); font-weight: bold; margin-right: 8px;">PIN:</span>
-          <input 
-            type="password" 
-            id="inputMasterPin" 
-            class="term-input" 
-            placeholder="Masukkan PIN..." 
-            style="color: var(--term-amber); font-size: 1.1rem; text-align: center;"
-            autocomplete="current-password"
-            required
-          >
+          <input type="password" id="inputMasterPin" class="term-input" placeholder="Masukkan PIN..."
+            style="color: var(--term-amber); font-size: 1.1rem; text-align: center;" autocomplete="current-password"
+            required>
         </div>
         <div id="pinErrorMsg" class="status-msg error" style="margin-bottom: 10px;"></div>
         <div style="display: flex; gap: 10px; justify-content: center;">
           <button type="submit" id="btnPinSubmit" class="admin-btn-action admin-btn-amber" style="padding: 8px 18px;">
             [ BUKA PANEL ]
           </button>
-          <button type="button" class="admin-btn-action admin-btn-delete" style="padding: 8px 18px;" onclick="closePinModal()">
+          <button type="button" class="admin-btn-action admin-btn-delete" style="padding: 8px 18px;"
+            onclick="closePinModal()">
             [ BATAL ]
           </button>
         </div>
@@ -996,7 +1172,7 @@
         <h3 id="adminModalTitle" style="color: var(--term-amber)">🛠 [ PANEL ADMIN // KONFIGURASI YB QUEST ]</h3>
         <button type="button" class="modal-close" onclick="closeAdminModal()">[X]</button>
       </div>
-      
+
       <!-- Bagian 1: Sandi Tahap 1 -->
       <section class="admin-section">
         <div class="admin-section-title">
@@ -1004,23 +1180,55 @@
         </div>
         <div class="form-group">
           <label for="adminStage1Pass">Kata Sandi Tahap 1 (Huruf Kapital Otomatis):</label>
-          <input 
-            type="text" 
-            id="adminStage1Pass" 
-            class="admin-input" 
-            placeholder="Contoh: ANGKATAN2026"
-            oninput="this.value = this.value.toUpperCase()"
-          >
+          <input type="text" id="adminStage1Pass" class="admin-input" placeholder="Contoh: ANGKATAN2026"
+            oninput="this.value = this.value.toUpperCase()">
           <span class="helper-text">Sandi ini yang harus ditebak pengguna dari petunjuk Instagram kreator.</span>
         </div>
         <div class="form-group">
           <label for="adminStage1Hint">Petunjuk Teks Tahap 1:</label>
-          <input 
-            type="text" 
-            id="adminStage1Hint" 
-            class="admin-input" 
-            placeholder="[PETUNJUK]: Sandi Tahap 1 tersembunyi pada postingan atau bio Instagram kreator."
-          >
+          <input type="text" id="adminStage1Hint" class="admin-input"
+            placeholder="[PETUNJUK]: Sandi Tahap 1 tersembunyi pada postingan atau bio Instagram kreator.">
+        </div>
+      </section>
+
+      <!-- Bagian 1.5: Pesan Kreator & Narasi Teka-Teki -->
+      <section class="admin-section">
+        <div class="admin-section-title">
+          <span>📜 TAHAP 1.5: PESAN KREATOR & NARASI TEKA-TEKI</span>
+        </div>
+        <div class="form-group">
+          <label for="adminCreatorTitle">Judul Transmisi / Pesan:</label>
+          <input type="text" id="adminCreatorTitle" class="admin-input"
+            placeholder="TRANSMISI DARI ARSIP KREATOR BUKU TAHUNAN">
+        </div>
+        <div class="form-group">
+          <label for="adminCreatorMsg">Isi Kata-Kata Pesan Kreator (Mendukung Enter / Baris Baru):</label>
+          <textarea id="adminCreatorMsg" class="admin-input" rows="6" style="resize: vertical; font-size: 0.85rem;"
+            placeholder="Tuliskan kata-kata pesan teka-teki Anda di sini..."></textarea>
+          <span class="helper-text">Pesan narasi ini akan otomatis muncul dengan efek ketikan setelah kode sandi Tahap 1
+            berhasil dimasukkan.</span>
+        </div>
+        <div class="form-group">
+          <label for="adminCreatorQuestion">Pertanyaan Tantangan Teka-Teki:</label>
+          <input type="text" id="adminCreatorQuestion" class="admin-input"
+            placeholder="⚠️ [PROTOKOL TEKA-TEKI]: Apakah Anda bersedia melanjutkan penyelidikan...">
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+          <div class="form-group">
+            <label for="adminCreatorBtnAccept">Teks Tombol Lanjut (Terima):</label>
+            <input type="text" id="adminCreatorBtnAccept" class="admin-input"
+              placeholder="[ ⚡ LANJUTKAN BERBURU RAHASIA ]">
+          </div>
+          <div class="form-group">
+            <label for="adminCreatorBtnDecline">Teks Tombol Batal (Menolak):</label>
+            <input type="text" id="adminCreatorBtnDecline" class="admin-input"
+              placeholder="[ ✖ BATALKAN / TETAP DI SINI ]">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="adminCreatorDeclineNotice">Pesan Jika Pemain Menolak / Batal:</label>
+          <input type="text" id="adminCreatorDeclineNotice" class="admin-input"
+            placeholder="[AKSES DITUNDA]: Anda memilih tidak melanjutkan teka-teki saat ini...">
         </div>
       </section>
 
@@ -1033,9 +1241,11 @@
           </button>
         </div>
         <p class="helper-text" style="margin-bottom: 8px;">
-          Setiap kartu mewakili 1 cabang teka-teki: pemain menebak nama objek/lokasi, lalu jika benar akan membuka video YouTube unlisted yang terkait.
+          Setiap kartu mewakili 1 cabang teka-teki: pemain menebak nama objek/lokasi, lalu jika benar akan membuka video
+          YouTube unlisted yang terkait.
         </p>
-        <div id="adminSectorNotice" class="status-msg success" style="margin-bottom: 8px; font-size: 0.8rem; min-height: 1.2rem;"></div>
+        <div id="adminSectorNotice" class="status-msg success"
+          style="margin-bottom: 8px; font-size: 0.8rem; min-height: 1.2rem;"></div>
 
         <!-- Dynamic List of Clue Rows in Admin -->
         <div id="adminCluesList">
@@ -1050,23 +1260,20 @@
         </div>
         <div class="form-group">
           <label for="adminMasterPin">PIN / Kata Sandi Masuk Panel Admin:</label>
-          <input 
-            type="text" 
-            id="adminMasterPin" 
-            class="admin-input" 
-            placeholder="Masukkan PIN baru..." 
-            style="max-width: 280px;"
-          >
+          <input type="text" id="adminMasterPin" class="admin-input" placeholder="Masukkan PIN baru..."
+            style="max-width: 280px;">
           <span class="helper-text">Gunakan PIN ini untuk membuka Panel Admin agar tidak sembarang dibuka siswa.</span>
         </div>
       </section>
 
       <!-- Footer Tombol Aksi Panel Admin -->
       <div class="admin-footer-bar">
-        <button type="button" class="admin-btn-action" onclick="adminSaveToBrowser()" title="Simpan ke browser ini (localStorage)">
+        <button type="button" class="admin-btn-action" onclick="adminSaveToBrowser()"
+          title="Simpan ke browser ini (localStorage)">
           💾 SIMPAN KE BROWSER INI
         </button>
-        <button type="button" class="admin-btn-action admin-btn-amber" onclick="adminDownloadNewIndexHtml()" title="Download file index.html baru yang sudah otomatis tertanam konfigurasi ini">
+        <button type="button" class="admin-btn-action admin-btn-amber" onclick="adminDownloadNewIndexHtml()"
+          title="Download file index.html baru yang sudah otomatis tertanam konfigurasi ini">
           📥 DOWNLOAD FILE INDEX.HTML BARU
         </button>
         <button type="button" class="admin-btn-action admin-btn-delete" onclick="adminResetToDefault()">
@@ -1095,6 +1302,14 @@
       // Kata Sandi Tahap 1
       STAGE_1_PASSWORD: "ANGKATAN2026",
       STAGE_1_HINT: "[PETUNJUK]: Sandi Tahap 1 tersembunyi pada postingan atau bio Instagram kreator.",
+
+      // Narasi Pesan Rahasia Kreator (Tahap 1.5)
+      CREATOR_TITLE: "TRANSMISI DARI ARSIP KREATOR BUKU TAHUNAN",
+      CREATOR_MESSAGE: "Halo penjelajah masa lalu...\n\nJika kamu berhasil membaca pesan ini, berarti kamu adalah salah satu dari sedikit orang yang cukup jeli menemukan gerbang arsip rahasia buku tahunan kita.\n\nDi balik terminal ini, tersimpan fragmen kenangan yang sengaja kami samarkan dan rekaman tersembunyi yang terkunci selama bertahun-tahun.\n\nHadiah sejati di ujung teka-teki ini bukanlah materi, melainkan kebenaran memori dan jejak langkah kita yang tak pernah diceritakan secara terbuka.\n\nApakah kamu siap menuntaskan teka-teki visual berikutnya?",
+      CREATOR_QUESTION: "⚠️ [PROTOKOL TEKA-TEKI]: Apakah Anda bersedia melanjutkan penyelidikan untuk memburu dan mengungkap fragmen rahasia berikutnya?",
+      CREATOR_BTN_ACCEPT: "[ ⚡ LANJUTKAN BERBURU RAHASIA ]",
+      CREATOR_BTN_DECLINE: "[ ✖ BATALKAN / TETAP DI SINI ]",
+      CREATOR_DECLINE_NOTICE: "[AKSES DITUNDA]: Anda memilih tidak melanjutkan teka-teki saat ini. Gerbang arsip tetap terbuka jika nanti Anda siap memecahkan kodenya.",
 
       // Daftar Objek/Sektor Tahap 2 & Video YouTube Tahap 3
       CLUES: [
@@ -1132,7 +1347,7 @@
         if (saved) {
           const parsed = JSON.parse(saved);
           if (parsed && parsed.STAGE_1_PASSWORD && Array.isArray(parsed.CLUES)) {
-            QUEST_CONFIG = parsed;
+            QUEST_CONFIG = Object.assign({}, DEFAULT_QUEST_CONFIG, parsed);
             console.log("[YB QUEST] Konfigurasi kustom dimuat dari LocalStorage.");
           }
         }
@@ -1266,17 +1481,11 @@
         // SUKSES TAHAP 1
         soundAccessGranted();
         statusEl.className = "status-msg success";
-        statusEl.textContent = "[AKSES DITERIMA] Membuka fragmen data terenkripsi...";
+        statusEl.textContent = "[AKSES DITERIMA] Membuka saluran transmisi rahasia...";
 
         setTimeout(() => {
           document.getElementById("stage1").classList.add("hidden");
-          renderStage2Gallery();
-          document.getElementById("stage2").classList.remove("hidden");
-          document.getElementById("clearanceBadge").textContent = "LEVEL 1 (STAGE 2)";
-          currentStage = 2;
-
-          const input2 = document.getElementById("inputStage2");
-          input2.focus();
+          showNarrativeStage();
         }, 500);
 
       } else {
@@ -1289,6 +1498,102 @@
         alert("PERINGATAN SISTEM: KATA SANDI TAHAP 1 SALAH!\nPeriksa petunjuk sandi di Instagram kreator.");
         inputEl.select();
       }
+    }
+
+    /* ========================================================================
+       3.5 TAHAP 1.5: TRANSMISI PESAN KREATOR & TANTANGAN TEKA-TEKI
+       ======================================================================== */
+    let typewriterTimeout = null;
+
+    function typewriterEffect(element, text, speed = 18, onComplete) {
+      if (typewriterTimeout) {
+        clearTimeout(typewriterTimeout);
+        typewriterTimeout = null;
+      }
+      element.textContent = "";
+      let i = 0;
+
+      function type() {
+        if (i < text.length) {
+          element.textContent += text.charAt(i);
+          i++;
+          // Suara ketikan halus tiap beberapa karakter
+          if (i % 4 === 0) {
+            playTone(900, "square", 0.015);
+          }
+          typewriterTimeout = setTimeout(type, speed);
+        } else {
+          if (onComplete) onComplete();
+        }
+      }
+      type();
+
+      // Klik untuk langsung menampilkan seluruh teks seketika
+      element.onclick = () => {
+        if (typewriterTimeout) {
+          clearTimeout(typewriterTimeout);
+          typewriterTimeout = null;
+        }
+        element.textContent = text;
+        if (onComplete) onComplete();
+      };
+    }
+
+    function showNarrativeStage() {
+      const section = document.getElementById("stageNarrative");
+      section.classList.remove("hidden");
+      document.getElementById("clearanceBadge").textContent = "LEVEL 1 (TRANSMISI RAHASIA)";
+      currentStage = 1.5;
+
+      // Update metadata timestamp
+      const now = new Date();
+      const timeStr = now.toLocaleDateString("id-ID") + " // " + now.toLocaleTimeString("id-ID");
+      const tsEl = document.getElementById("narrativeTimestamp");
+      if (tsEl) tsEl.textContent = "TERDEKRIPSI: " + timeStr;
+
+      // Judul
+      const titleEl = document.getElementById("stageNarrative-title");
+      if (titleEl) titleEl.textContent = QUEST_CONFIG.CREATOR_TITLE || "TRANSMISI DARI ARSIP KREATOR BUKU TAHUNAN";
+
+      // Pertanyaan & Tombol
+      const qEl = document.getElementById("narrativeQuestion");
+      if (qEl) qEl.textContent = QUEST_CONFIG.CREATOR_QUESTION || "⚠️ [PROTOKOL TEKA-TEKI]: Apakah Anda bersedia melanjutkan penyelidikan untuk memburu dan mengungkap fragmen rahasia berikutnya?";
+
+      const btnAcc = document.getElementById("btnAcceptQuest");
+      if (btnAcc) btnAcc.textContent = QUEST_CONFIG.CREATOR_BTN_ACCEPT || "[ ⚡ LANJUTKAN BERBURU RAHASIA ]";
+
+      const btnDec = document.getElementById("btnDeclineQuest");
+      if (btnDec) btnDec.textContent = QUEST_CONFIG.CREATOR_BTN_DECLINE || "[ ✖ BATALKAN / TETAP DI SINI ]";
+
+      document.getElementById("declineNotice").classList.add("hidden");
+
+      // Jalankan animasi ketikan pesan narasi
+      const textContainer = document.getElementById("narrativeText");
+      const msg = QUEST_CONFIG.CREATOR_MESSAGE || "Halo, penjelajah masa lalu...";
+      typewriterEffect(textContainer, msg, 18);
+    }
+
+    function proceedToStage2() {
+      soundAccessGranted();
+      if (typewriterTimeout) {
+        clearTimeout(typewriterTimeout);
+        typewriterTimeout = null;
+      }
+      document.getElementById("stageNarrative").classList.add("hidden");
+      renderStage2Gallery();
+      document.getElementById("stage2").classList.remove("hidden");
+      document.getElementById("clearanceBadge").textContent = "LEVEL 2 (CABANG VISUAL)";
+      currentStage = 2;
+
+      const input2 = document.getElementById("inputStage2");
+      input2.focus();
+    }
+
+    function handleDeclineQuest() {
+      soundAccessDenied();
+      const notice = document.getElementById("declineNotice");
+      notice.classList.remove("hidden");
+      notice.textContent = QUEST_CONFIG.CREATOR_DECLINE_NOTICE || "[AKSES DITUNDA]: Anda memilih tidak melanjutkan teka-teki saat ini. Gerbang arsip tetap terbuka jika nanti Anda siap memecahkan kodenya.";
     }
 
     /* ========================================================================
@@ -1431,9 +1736,14 @@
 
     function resetToBeginning() {
       soundBeepClick();
+      if (typewriterTimeout) {
+        clearTimeout(typewriterTimeout);
+        typewriterTimeout = null;
+      }
       document.getElementById("videoContainer").innerHTML = "";
       document.getElementById("stage3").classList.add("hidden");
       document.getElementById("stage2").classList.add("hidden");
+      document.getElementById("stageNarrative").classList.add("hidden");
       document.getElementById("stage1").classList.remove("hidden");
 
       document.getElementById("clearanceBadge").textContent = "LEVEL 0 (PUBLIC)";
@@ -1529,6 +1839,24 @@
       document.getElementById("adminStage1Pass").value = QUEST_CONFIG.STAGE_1_PASSWORD || "";
       document.getElementById("adminStage1Hint").value = QUEST_CONFIG.STAGE_1_HINT || "";
       document.getElementById("adminMasterPin").value = QUEST_CONFIG.ADMIN_PIN || "ADMIN123";
+
+      const adminTitleEl = document.getElementById("adminCreatorTitle");
+      if (adminTitleEl) adminTitleEl.value = QUEST_CONFIG.CREATOR_TITLE || "";
+
+      const adminMsgEl = document.getElementById("adminCreatorMsg");
+      if (adminMsgEl) adminMsgEl.value = QUEST_CONFIG.CREATOR_MESSAGE || "";
+
+      const adminQEl = document.getElementById("adminCreatorQuestion");
+      if (adminQEl) adminQEl.value = QUEST_CONFIG.CREATOR_QUESTION || "";
+
+      const adminAccEl = document.getElementById("adminCreatorBtnAccept");
+      if (adminAccEl) adminAccEl.value = QUEST_CONFIG.CREATOR_BTN_ACCEPT || "";
+
+      const adminDecEl = document.getElementById("adminCreatorBtnDecline");
+      if (adminDecEl) adminDecEl.value = QUEST_CONFIG.CREATOR_BTN_DECLINE || "";
+
+      const adminNoticeEl = document.getElementById("adminCreatorDeclineNotice");
+      if (adminNoticeEl) adminNoticeEl.value = QUEST_CONFIG.CREATOR_DECLINE_NOTICE || "";
 
       renderAdminCluesList();
     }
@@ -1651,7 +1979,7 @@
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = function(e) {
+      reader.onload = function (e) {
         const dataUrl = e.target.result;
         document.getElementById(`clueImage_${index}`).value = dataUrl;
         document.getElementById(`clueImgPreview_${index}`).src = dataUrl;
@@ -1676,7 +2004,7 @@
       // Auto-save ke localStorage dan update galeri seketika
       try {
         localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
-      } catch (e) {}
+      } catch (e) { }
 
       renderAdminCluesList();
       renderStage2Gallery();
@@ -1701,7 +2029,7 @@
       // Auto-save ke localStorage dan update galeri seketika
       try {
         localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
-      } catch (e) {}
+      } catch (e) { }
 
       renderAdminCluesList();
       renderStage2Gallery();
@@ -1727,6 +2055,24 @@
       QUEST_CONFIG.STAGE_1_HINT = document.getElementById("adminStage1Hint").value.trim();
       QUEST_CONFIG.ADMIN_PIN = document.getElementById("adminMasterPin").value.trim() || "ADMIN123";
 
+      const adminTitleEl = document.getElementById("adminCreatorTitle");
+      if (adminTitleEl) QUEST_CONFIG.CREATOR_TITLE = adminTitleEl.value.trim() || "TRANSMISI DARI ARSIP KREATOR BUKU TAHUNAN";
+
+      const adminMsgEl = document.getElementById("adminCreatorMsg");
+      if (adminMsgEl) QUEST_CONFIG.CREATOR_MESSAGE = adminMsgEl.value.trim();
+
+      const adminQEl = document.getElementById("adminCreatorQuestion");
+      if (adminQEl) QUEST_CONFIG.CREATOR_QUESTION = adminQEl.value.trim();
+
+      const adminAccEl = document.getElementById("adminCreatorBtnAccept");
+      if (adminAccEl) QUEST_CONFIG.CREATOR_BTN_ACCEPT = adminAccEl.value.trim() || "[ ⚡ LANJUTKAN BERBURU RAHASIA ]";
+
+      const adminDecEl = document.getElementById("adminCreatorBtnDecline");
+      if (adminDecEl) QUEST_CONFIG.CREATOR_BTN_DECLINE = adminDecEl.value.trim() || "[ ✖ BATALKAN / TETAP DI SINI ]";
+
+      const adminNoticeEl = document.getElementById("adminCreatorDeclineNotice");
+      if (adminNoticeEl) QUEST_CONFIG.CREATOR_DECLINE_NOTICE = adminNoticeEl.value.trim() || "[AKSES DITUNDA]: Anda memilih tidak melanjutkan teka-teki saat ini.";
+
       QUEST_CONFIG.CLUES.forEach((clue, index) => {
         const kwEl = document.getElementById(`clueKeyword_${index}`);
         const titleEl = document.getElementById(`clueTitle_${index}`);
@@ -1749,10 +2095,15 @@
         localStorage.setItem("YB_QUEST_CONFIG", JSON.stringify(QUEST_CONFIG));
         soundAccessGranted();
         alert("SUKSES! Konfigurasi telah disimpan ke browser ini.\nPerubahan langsung aktif.");
-        
+
         // Perbarui hint teks di Tahap 1
         if (QUEST_CONFIG.STAGE_1_HINT) {
           document.getElementById("stage1HintText").textContent = QUEST_CONFIG.STAGE_1_HINT;
+        }
+
+        // Jika sedang di tahap 1.5, perbarui tampilan narasi
+        if (currentStage === 1.5) {
+          showNarrativeStage();
         }
 
         // Jika sedang di tahap 2, render ulang galeri
@@ -1891,4 +2242,5 @@
     });
   </script>
 </body>
+
 </html>
